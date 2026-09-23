@@ -135,6 +135,8 @@ def _make_lines(page: pdfplumber.page.Page) -> list[Line]:
         text = _chars_to_text(bucket)
         if not text:
             continue
+        if text.isdigit() and bucket[0]["x0"] < page.width * 0.15:
+            continue
         x0 = min(c["x0"] for c in bucket)
         x1 = max(c["x1"] for c in bucket)
         top = min(c["top"] for c in bucket)
@@ -318,15 +320,14 @@ def _paragraphs(page: pdfplumber.page.Page, lines: list[Line], body_size: float 
             gap = line.top - prev.bottom
             typical_height = _median([x.bottom - x.top for x in current[-3:]], 10.0)
             same_indent = abs(line.x0 - prev.x0) <= max(18.0, typical_height * 1.8)
+            max_gap = max(4.0, typical_height * 0.6)
             # pdfplumber places display-math glyphs and inline superscripts
             # on separate rows. Let those rows bridge the surrounding prose;
             # the scan stage rejects a math row if it is itself the tail.
             if _is_display_math_line(line, page, body_size) or _is_display_math_line(prev, page, body_size):
                 same_indent = True
-            # TeX paragraph spacing is normally below two line heights.  A
-            # larger gap, a changed indent, or a column change starts a new
-            # paragraph.
-            if gap <= max(5.0, typical_height * 1.65) and same_indent:
+                max_gap = max(5.0, typical_height * 1.65)
+            if gap <= max_gap and same_indent:
                 current.append(line)
             else:
                 groups.append(current)
@@ -346,20 +347,28 @@ def scan_pdf(input_pdf: Path, ratio: float = 2 / 3) -> list[Finding]:
             10.0,
         )
         for page_no, (page, page_lines) in enumerate(zip(pdf.pages, page_lines_all), start=1):
+            if references_started:
+                break
             threshold = page.width * ratio
             if page_no == 1:
                 abstract = next((line for line in page_lines if re.sub(r"\W", "", line.text).lower() == "abstract"), None)
                 if abstract:
                     page_lines = [line for line in page_lines if line.top >= abstract.top]
+            for index, line in enumerate(page_lines):
+                title = line.text
+                if title.strip().upper() == "R" and index + 1 < len(page_lines):
+                    next_line = page_lines[index + 1]
+                    if next_line.top - line.top < 5:
+                        title += next_line.text
+                if re.sub(r"\W", "", title).upper() == "REFERENCES":
+                    page_lines = page_lines[:index]
+                    references_started = True
+                    break
             # Keep the raw rows for detecting a prose lead-in immediately
             # followed by display math, but never offer algorithm rows to the
             # paragraph builder.
             raw_page_lines = page_lines
             page_lines = _without_algorithm_blocks(page_lines)
-            if any(re.match(r"^references\b", line.text.strip(), re.I) for line in page_lines):
-                references_started = True
-            if references_started:
-                continue
             paragraphs = _paragraphs(page, page_lines, global_body_size)
             for para_no, para in enumerate(paragraphs, start=1):
                 # A paragraph should have enough prose to distinguish it from

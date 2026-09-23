@@ -3,6 +3,7 @@ from pathlib import Path
 
 import pdfplumber
 import pytest
+from reportlab.pdfgen.canvas import Canvas
 
 from pdf_tail_detector import Line, _is_display_math_line, _looks_structural, _without_algorithm_blocks, scan_pdf
 
@@ -50,6 +51,33 @@ def test_annotation_label_is_structural_metadata():
     annotation = _line("tail x=338.7", 100, "Helvetica")
 
     assert _looks_structural(annotation, _Page(), 10)
+
+
+def test_margin_line_numbers_do_not_split_tail_and_split_references_stop_scan(tmp_path):
+    path = tmp_path / "numbered.pdf"
+    canvas = Canvas(str(path), pagesize=(612, 792))
+    canvas.setFont("Helvetica", 10)
+    canvas.drawString(108, 740, "ABSTRACT")
+    canvas.drawString(108, 720, "A previous paragraph introduces the result and ends here.")
+    canvas.drawString(108, 703, "A measured effect has a long explanation on its first line and")
+    canvas.drawString(108, 691, "full-model timing controls.")
+    canvas.setFont("Helvetica", 8)
+    canvas.drawString(72, 700, "1")
+    canvas.drawString(72, 688, "2")
+    canvas.showPage()
+    canvas.setFont("Helvetica", 12)
+    canvas.drawString(108, 700, "R")
+    canvas.drawString(117, 698, "EFERENCES")
+    canvas.setFont("Helvetica", 10)
+    canvas.drawString(108, 660, "A citation with enough words to look like a prose paragraph")
+    canvas.drawString(108, 648, "but it belongs to the references list.")
+    canvas.save()
+
+    findings = scan_pdf(path)
+
+    assert all(finding.page == 1 for finding in findings)
+    tail = next(finding for finding in findings if finding.final_line == "full-model timing controls.")
+    assert tail.paragraph_text.startswith("A measured effect")
 
 
 @pytest.mark.parametrize(
