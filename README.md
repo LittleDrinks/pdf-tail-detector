@@ -1,8 +1,8 @@
 # PDF 短尾段识别工具
 
-`pdf_tail_detector.py` 面向 ICLR、NeurIPS/NIPS 常见的单栏或双栏论文 PDF。它按字符坐标重建文本行和段落，检查每个段落最后一行最后一个可见字符的右边界 `x1`：
+`pdf_tail_detector.py` 面向 ICLR 常见的单栏论文 PDF。它按字符坐标重建文本行和段落，检查段落末字的右边界 `x1`：
 
-依赖：`pdfplumber`、`pypdf`、`reportlab`。建议使用 Codex 随附的 Python，或先执行 `python -m pip install pdfplumber pypdf reportlab`。
+依赖：`pdfplumber`、`pypdf`、`reportlab`。安装：`python -m pip install pdfplumber pypdf reportlab`。
 
 ```text
 x1 < 页面宽度 * 2/3
@@ -12,15 +12,14 @@ x1 < 页面宽度 * 2/3
 
 ## 使用
 
-```powershell
-$py = "C:\Users\q2635\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe"
-& $py .\pdf_tail_detector.py .\paper.pdf --template iclr --output .\paper.tail-marked.pdf
+```sh
+python pdf_tail_detector.py paper.pdf --output paper.tail-marked.pdf
 ```
 
 也可以指定比例，例如更严格的 70%：
 
-```powershell
-& $py .\pdf_tail_detector.py .\paper.pdf --ratio 0.70 --output .\paper.tail-marked.pdf
+```sh
+python pdf_tail_detector.py paper.pdf --ratio 0.70 --output paper.tail-marked.pdf
 ```
 
 输出：
@@ -31,7 +30,19 @@ $py = "C:\Users\q2635\.cache\codex-runtimes\codex-primary-runtime\dependencies\p
 ## 规则边界
 
 - 坐标使用 PDF 页面坐标，默认比较最后字符的右边界 `x1`，比用字符左边界更符合“最后一个字到达页面右侧”的视觉含义。
-- 页眉、页脚、页码、标题、节标题、图表标题、独立公式和常见伪代码行会被过滤；正文中的行内公式保留。
-- 段落由同一栏中垂直间距较小、缩进相近的正文行组成。模板变体或扫描版 PDF 可能没有可用的文字坐标，此时需要先 OCR，或改用带字符框的文本层。
-- 工具只报告几何上的候选，不替代人工判断；公式、引用串、特殊字距和双栏跨栏内容建议在标记 PDF 中复核。
-- 标题、图表/表格标题、独立公式、常见伪代码关键词、等宽或明显较小的算法字体会被过滤。模板自定义宏、扫描版 PDF、复杂表格仍可能产生候选，需要看红框和终端上下文。
+- 页眉、页脚、标题、图表说明、独立公式及常见算法块会被过滤；正文中的行内公式保留。
+- 段落由垂直间距和缩进相近的正文行组成。工具只报告几何候选，需要结合标记 PDF 复核。扫描版 PDF 需要先有文字层。
+- 当前阈值相对整页宽度定义；NeurIPS/NIPS 等双栏版式需要先定义每栏的正文边界，不能把本工具的结果直接用于右栏。
+
+架构保持单模块：`scan_pdf(input_pdf, ratio)` 依次做字形到行、版面过滤、行到段落、候选判定；标记 PDF 和终端报告只消费检测结果。规则优先依据坐标与字体，少量文本模式识别算法环境和版面标签。
+
+## 回归样本
+
+`tests/fixtures/iclr/` 内置两篇 ICLR 2024 论文，覆盖单栏正文、公式、表格和算法环境：
+
+- [What does automatic differentiation compute for neural networks?](https://proceedings.iclr.cc/paper_files/paper/2024/file/e8711daef520be07cb9852390c673de8-Paper-Conference.pdf)
+- [Efficiently Computing Similarities to Private Datasets](https://proceedings.iclr.cc/paper_files/paper/2024/file/6fca3ed3c54ffeae947ae668a0841ab2-Paper-Conference.pdf)
+
+测试只依赖仓库内样本，不在测试期间联网；它检查正文短尾仍能命中，算法步骤不会变成候选。
+
+运行：`python -m pytest -q test_pdf_tail_detector.py`（另需安装 `pytest`）。

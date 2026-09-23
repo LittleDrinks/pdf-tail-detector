@@ -13,6 +13,7 @@ import math
 import re
 import statistics
 from dataclasses import dataclass
+from io import BytesIO
 from pathlib import Path
 from typing import Any, Iterable
 
@@ -25,6 +26,17 @@ from reportlab.pdfgen.canvas import Canvas
 SECTION_RE = re.compile(r"^(?:\d+|[IVX]+)(?:\.\d+)*[.)]?\s+")
 CAPTION_RE = re.compile(r"^(?:figure|fig\.?|table|algorithm|appendix)\s*\d*\s*[:.)-]?", re.I)
 PAGE_NUMBER_RE = re.compile(r"^(?:\d+|[-–—]?\s*\d+\s*[-–—]?)$")
+ALGORITHM_HEADING_RE = re.compile(r"^algorithm\s+\d+\b", re.I)
+ALGORITHM_END_RE = re.compile(r"^(?:\d+\s*:\s*)?end\s+for\b", re.I)
+ALGORITHM_STEP_RE = re.compile(r"^\d+\s*:\s*")
+ANNOTATION_RE = re.compile(r"^tail\s+x\s*=", re.I)
+MATH_FONT_RE = re.compile(r"(?:cmmi|cmsy|cmex|msam|msbm|cmr\d|math|symbol)", re.I)
+FORMULA_LEAD_RE = re.compile(
+    r"(?:\b(?:define|satisf(?:y|ies)|give|gives|yield|yields|form|follows|"
+    r"transformation|assume|consider|suppose|let|write|set|has|have|is|are|be|then)"
+    r"|law|:)\s*$|[,;]\s*$",
+    re.I,
+)
 
 
 @dataclass
@@ -47,22 +59,11 @@ class Finding:
     paragraph_text: str
     final_line: str
     last_char: str
-    last_char_x0: float
     last_char_x1: float
-    page_width: float
-    page_height: float
     threshold_x: float
-    ratio: float
-    template: str
+    bbox: tuple[float, float, float, float]
     context_before: str = ""
     context_after: str = ""
-
-
-def _num(value: Any, default: float = 0.0) -> float:
-    try:
-        return float(value)
-    except (TypeError, ValueError):
-        return default
 
 
 def _median(values: Iterable[float], default: float) -> float:
@@ -70,7 +71,7 @@ def _median(values: Iterable[float], default: float) -> float:
     return statistics.median(vals) if vals else default
 
 
-def _column_for(x0: float, x1: float, width: float) -> str:
+def _column_for(x0: float, width: float) -> str:
     """Classify by the left edge so short final lines stay in their column."""
     # A full-width line and a short line in a one-column paper have different
     # x1 values but the same x0.  Classifying by x1 would split one paragraph.
@@ -86,7 +87,7 @@ def _chars_to_text(chars: list[dict[str, Any]]) -> str:
         if not text.strip():
             continue
         if previous is not None:
-            gap = _num(char.get("x0")) - _num(previous.get("x1"))
+            gap = char["x0"] - previous["x1"]
             prev_text = str(previous.get("text", ""))
             if gap > 1.5 and prev_text not in "([{\"'" and text not in ",.;:!?)]}\"'":
                 result.append(" ")
@@ -99,58 +100,57 @@ def _make_lines(page: pdfplumber.page.Page) -> list[Line]:
     chars = [c for c in page.chars if str(c.get("text", "")).strip()]
     if not chars:
         return []
-    # A line groups glyphs with nearly the same top coordinate.  The tolerance
-    # is relative to the page but bounded so small superscripts do not split a
-    # normal text line into many fragments.
     tolerance = max(1.2, min(3.0, page.height * 0.0025))
-    chars.sort(key=lambda c: (_num(c.get("top")), _num(c.get("x0"))))
     buckets: list[list[dict[str, Any]]] = []
     means: list[float] = []
-    for char in chars:
-        top = _num(char.get("top"))
-        best = None
-        for i, mean in enumerate(means):
-            if abs(top - mean) <= tolerance:
-                best = i
-                break
-        if best is None:
-            buckets.append([char])
-            means.append(top)
+    for char in sorted(chars, key=lambda c: (c["top"], c["x0"])):
+        if buckets and char["top"] - means[-1] <= tolerance:
+            bucket = buckets[-1]
+            bucket.append(char)
+            means[-1] += (char["top"] - means[-1]) / len(bucket)
         else:
-            buckets[best].append(char)
-            means[best] = sum(_num(c.get("top")) for c in buckets[best]) / len(buckets[best])
+            buckets.append([char])
+            means.append(char["top"])
 
     lines: list[Line] = []
     for bucket in buckets:
-        bucket.sort(key=lambda c: _num(c.get("x0")))
+        bucket.sort(key=lambda c: c["x0"])
         # ICLR/NeurIPS review PDFs may contain line numbers in the left
         # margin. Remove a short numeric prefix when it is separated from
         # the body by a visible horizontal gap.
-        if len(bucket) >= 2:
-            prefix_end = 0
-            while prefix_end < len(bucket) and str(bucket[prefix_end].get("text", "")).strip().isdigit():
-                prefix_end += 1
-            if 0 < prefix_end < len(bucket) and prefix_end <= 4:
-                gap = _num(bucket[prefix_end].get("x0")) - _num(bucket[prefix_end - 1].get("x1"))
-                if _num(bucket[0].get("x0")) < page.width * 0.20 and gap >= 5.0:
-                    bucket = bucket[prefix_end:]
+        if len(bucket) >= 2 and bucket[0]["x0"] < page.width * 0.15:
+            # A source line number can share a text row with an algorithm
+            # step number (for example ``335 9: return``). Find the first
+            # large horizontal gap and remove only the left-margin number;
+            # treating every adjacent digit as one prefix leaves ``335 9:``
+            # in the body and defeats algorithm filtering.
+            for split in range(1, min(6, len(bucket))):
+                prefix = [str(c.get("text", "")).strip() for c in bucket[:split]]
+                if not prefix or not all(token.isdigit() for token in prefix):
+                    continue
+                gap = bucket[split]["x0"] - bucket[split - 1]["x1"]
+                if gap >= 5.0:
+                    bucket = bucket[split:]
+                    break
         text = _chars_to_text(bucket)
         if not text:
             continue
-        x0 = min(_num(c.get("x0")) for c in bucket)
-        x1 = max(_num(c.get("x1")) for c in bucket)
-        top = min(_num(c.get("top")) for c in bucket)
-        bottom = max(_num(c.get("bottom"), _num(c.get("top"))) for c in bucket)
-        sizes = [_num(c.get("size"), 0.0) for c in bucket]
+        x0 = min(c["x0"] for c in bucket)
+        x1 = max(c["x1"] for c in bucket)
+        top = min(c["top"] for c in bucket)
+        bottom = max(c["bottom"] for c in bucket)
+        sizes = [c["size"] for c in bucket]
         lines.append(Line(bucket, text, x0, x1, top, bottom,
-                          _column_for(x0, x1, page.width), _median(sizes, 10.0)))
+                          _column_for(x0, page.width), _median(sizes, 10.0)))
     return sorted(lines, key=lambda l: (l.top, l.x0))
 
 
 def _looks_structural(line: Line, page: pdfplumber.page.Page, body_size: float) -> bool:
     text = line.text.strip()
     low = text.lower()
-    if not text or PAGE_NUMBER_RE.fullmatch(text):
+    if not text or PAGE_NUMBER_RE.fullmatch(text) or ANNOTATION_RE.match(text):
+        return True
+    if "@" in text or re.match(r"^\([a-z]\)\s", text):
         return True
     # Running headers, page numbers, and footers are not body paragraphs.
     if line.top < page.height * 0.065 or line.bottom > page.height * 0.95:
@@ -175,17 +175,84 @@ def _looks_structural(line: Line, page: pdfplumber.page.Page, body_size: float) 
     )
     if monospace or code_start or any(symbol in text for symbol in ("←", "<-", ":=")):
         return True
-    # Display equations and isolated math lines generally contain very few
-    # alphabetic characters.  Inline math remains part of ordinary prose.
-    if len(text) >= 3 and letters < max(3, len(text) * 0.28) and any(ch in text for ch in "=∑∫√{}^_"):
-        return True
     # Very small text is usually a footnote or template metadata.  Keep it
     # when it is close to body size; this avoids relying on a fixed point size.
     if body_size and line.font_size < body_size * 0.92:
-        return True
+        # TeX emits inline superscripts and subscripts as separate, smaller
+        # rows. They belong to the surrounding paragraph; page numbers and
+        # footnotes use non-math fonts and remain structural.
+        if not any(MATH_FONT_RE.search(str(c.get("fontname", ""))) for c in line.chars):
+            return True
     if low in {"abstract", "introduction", "references", "acknowledgments", "acknowledgements"}:
         return True
     return False
+
+
+def _is_display_math_line(line: Line, page: pdfplumber.page.Page, body_size: float) -> bool:
+    """Recognize TeX display-math fragments without rejecting inline math."""
+    text = line.text.strip()
+    if len(text) < 1:
+        return False
+    visible = [c for c in line.chars if str(c.get("text", "")).strip()]
+    if not visible:
+        return False
+    math_chars = sum(1 for c in visible if MATH_FONT_RE.search(str(c.get("fontname", ""))))
+    math_ratio = math_chars / len(visible)
+    compact = text.replace(" ", "")
+    letters = sum(ch.isalpha() for ch in compact)
+    symbol_heavy = any(ch in compact for ch in "=≤≥∑∫√{}^_∥()")
+    # Standalone equation rows in pdfplumber are usually dominated by CM
+    # math fonts, or carry a cid glyph marker from a symbol font. Prose rows
+    # with inline variables have a much lower math-font ratio.
+    if math_ratio >= 0.65 and (symbol_heavy or len(text) <= 32):
+        return True
+    if "(cid:" in text and math_ratio >= 0.45 and len(text) < 90:
+        return True
+    if math_ratio >= 0.80 and len(text) < 70:
+        return True
+    if letters < max(3, len(compact) * 0.45) and math_ratio >= 0.35 and symbol_heavy:
+        return True
+    # A narrow, small-font equation row is often made entirely of symbols
+    # even when the embedded font name is not preserved by the PDF producer.
+    if body_size and line.font_size < body_size * 0.9 and line.x1 - line.x0 < page.width * 0.62:
+        if letters < max(4, len(compact) * 0.55) and symbol_heavy:
+            return True
+    return False
+
+
+def _without_algorithm_blocks(lines: list[Line]) -> list[Line]:
+    """Drop complete algorithm environments, including their step rows."""
+    result: list[Line] = []
+    in_algorithm = False
+    after_end = False
+    last_algorithm_top = 0.0
+    for index, line in enumerate(lines):
+        text = line.text.strip()
+        if ALGORITHM_HEADING_RE.match(text):
+            upcoming = (candidate.text.strip() for candidate in lines[index + 1:index + 12])
+            if any(ALGORITHM_STEP_RE.match(row) or re.match(r"^(?:require|ensure|input|output)\s*:", row, re.I)
+                   for row in upcoming):
+                in_algorithm = True
+                after_end = False
+                continue
+        if in_algorithm:
+            if after_end and not PAGE_NUMBER_RE.fullmatch(text):
+                # Algorithms may contain several independent loops. The
+                # first ``end for`` is not the end of the environment; the
+                # final one is followed by a visible prose-sized gap.
+                if line.top - last_algorithm_top > 20.0:
+                    in_algorithm = False
+                    after_end = False
+                    result.append(line)
+                    continue
+            if ALGORITHM_END_RE.match(text):
+                after_end = True
+                last_algorithm_top = line.top
+            elif not PAGE_NUMBER_RE.fullmatch(text):
+                last_algorithm_top = line.top
+            continue
+        result.append(line)
+    return result
 
 
 def _looks_table_like(text: str) -> bool:
@@ -204,22 +271,11 @@ def _looks_table_like(text: str) -> bool:
     return False
 
 
-def _looks_math_like(text: str) -> bool:
-    compact = text.replace(" ", "")
-    if not compact:
-        return False
-    letters = sum(ch.isalpha() for ch in compact)
-    return (
-        compact.startswith("(cid")
-        or letters / len(compact) < 0.58 and any(ch in compact for ch in "=≤≥∑∫√{}^_()")
-    )
-
-
 def _paragraphs(page: pdfplumber.page.Page, lines: list[Line], body_size: float | None = None) -> list[list[Line]]:
     if not lines:
         return []
     body_size = body_size or _median([l.font_size for l in lines if len(l.text) > 20], 10.0)
-    by_column: dict[str, list[Line]] = {"left": [], "right": [], "full": []}
+    by_column: dict[str, list[Line]] = {"left": [], "right": []}
     for line in lines:
         by_column.setdefault(line.column, []).append(line)
     groups: list[list[Line]] = []
@@ -229,6 +285,11 @@ def _paragraphs(page: pdfplumber.page.Page, lines: list[Line], body_size: float 
         skip_caption_block = False
         caption_bottom = 0.0
         for line in column_lines:
+            # Labels written by this tool are overlay metadata, not source
+            # text. Ignore them without closing the surrounding paragraph so
+            # scanning an already marked PDF is idempotent.
+            if ANNOTATION_RE.match(line.text.strip()):
+                continue
             if _looks_structural(line, page, body_size):
                 if CAPTION_RE.match(line.text.strip()):
                     skip_caption_block = True
@@ -257,6 +318,11 @@ def _paragraphs(page: pdfplumber.page.Page, lines: list[Line], body_size: float 
             gap = line.top - prev.bottom
             typical_height = _median([x.bottom - x.top for x in current[-3:]], 10.0)
             same_indent = abs(line.x0 - prev.x0) <= max(18.0, typical_height * 1.8)
+            # pdfplumber places display-math glyphs and inline superscripts
+            # on separate rows. Let those rows bridge the surrounding prose;
+            # the scan stage rejects a math row if it is itself the tail.
+            if _is_display_math_line(line, page, body_size) or _is_display_math_line(prev, page, body_size):
+                same_indent = True
             # TeX paragraph spacing is normally below two line heights.  A
             # larger gap, a changed indent, or a column change starts a new
             # paragraph.
@@ -270,9 +336,8 @@ def _paragraphs(page: pdfplumber.page.Page, lines: list[Line], body_size: float 
     return sorted(groups, key=lambda p: (p[0].top, p[0].x0))
 
 
-def scan_pdf(input_pdf: Path, ratio: float = 2 / 3, template: str = "auto") -> tuple[list[Finding], list[dict[str, Any]]]:
+def scan_pdf(input_pdf: Path, ratio: float = 2 / 3) -> list[Finding]:
     findings: list[Finding] = []
-    annotations: list[dict[str, Any]] = []
     references_started = False
     with pdfplumber.open(str(input_pdf)) as pdf:
         page_lines_all = [_make_lines(page) for page in pdf.pages]
@@ -282,7 +347,15 @@ def scan_pdf(input_pdf: Path, ratio: float = 2 / 3, template: str = "auto") -> t
         )
         for page_no, (page, page_lines) in enumerate(zip(pdf.pages, page_lines_all), start=1):
             threshold = page.width * ratio
-            page_lines = _make_lines(page)
+            if page_no == 1:
+                abstract = next((line for line in page_lines if re.sub(r"\W", "", line.text).lower() == "abstract"), None)
+                if abstract:
+                    page_lines = [line for line in page_lines if line.top >= abstract.top]
+            # Keep the raw rows for detecting a prose lead-in immediately
+            # followed by display math, but never offer algorithm rows to the
+            # paragraph builder.
+            raw_page_lines = page_lines
+            page_lines = _without_algorithm_blocks(page_lines)
             if any(re.match(r"^references\b", line.text.strip(), re.I) for line in page_lines):
                 references_started = True
             if references_started:
@@ -301,23 +374,24 @@ def scan_pdf(input_pdf: Path, ratio: float = 2 / 3, template: str = "auto") -> t
                 visible_chars = [c for c in final.chars if str(c.get("text", "")).strip()]
                 if not visible_chars:
                     continue
+                if _is_display_math_line(final, page, global_body_size):
+                    continue
                 last = visible_chars[-1]
-                x0, x1 = _num(last.get("x0")), _num(last.get("x1"))
+                x1 = last["x1"]
                 if x1 >= threshold:
                     continue
-                following = [
-                    candidate.text for candidate in page_lines
+                following_rows = [
+                    candidate for candidate in raw_page_lines
                     if candidate.column == final.column
                     and candidate.top > final.bottom + 0.5
                     and not PAGE_NUMBER_RE.fullmatch(candidate.text.strip())
+                    and not ANNOTATION_RE.match(candidate.text.strip())
                 ]
-                next_text = following[0] if following else ""
+                following = [candidate.text for candidate in following_rows]
                 # A prose line ending in ':' or 'is' immediately before a
                 # display equation is a lead-in, not a short paragraph tail.
-                if next_text and _looks_math_like(next_text) and (
-                    final.text.rstrip().endswith((":", ";"))
-                    or re.search(r"\b(?:is|are|be|then)$", final.text.rstrip(), re.I)
-                ):
+                next_row = following_rows[0] if following_rows else None
+                if next_row and _is_display_math_line(next_row, page, global_body_size) and FORMULA_LEAD_RE.search(final.text):
                     continue
                 finding = Finding(
                     page=page_no,
@@ -326,78 +400,70 @@ def scan_pdf(input_pdf: Path, ratio: float = 2 / 3, template: str = "auto") -> t
                     paragraph_text=paragraph_text,
                     final_line=final.text,
                     last_char=str(last.get("text", "")),
-                    last_char_x0=round(x0, 3),
                     last_char_x1=round(x1, 3),
-                    page_width=round(page.width, 3),
-                    page_height=round(page.height, 3),
                     threshold_x=round(threshold, 3),
-                    ratio=ratio,
-                    template=template,
+                    bbox=(
+                        max(0.0, final.x0 - 1.5),
+                        min(page.width, final.x1 + 1.5),
+                        max(0.0, final.top - 1.5),
+                        min(page.height, final.bottom + 1.5),
+                    ),
                     context_before=para[-2].text if len(para) > 1 else "",
                     context_after=following[0] if following else "",
                 )
                 findings.append(finding)
-                annotations.append({
-                    "page": page_no,
-                    "x0": max(0.0, min(page.width, final.x0 - 1.5)),
-                    "x1": max(0.0, min(page.width, final.x1 + 1.5)),
-                    "top": max(0.0, final.top - 1.5),
-                    "bottom": min(page.height, final.bottom + 1.5),
-                    "threshold": threshold,
-                    "last_char_x1": x1,
-                })
-    return findings, annotations
+    return findings
 
 
-def _write_annotated(input_pdf: Path, output_pdf: Path, annotations: list[dict[str, Any]], ratio: float) -> None:
+def _write_annotated(input_pdf: Path, output_pdf: Path, findings: list[Finding], ratio: float) -> None:
+    output_pdf.parent.mkdir(parents=True, exist_ok=True)
     reader = PdfReader(str(input_pdf))
     writer = PdfWriter()
-    by_page: dict[int, list[dict[str, Any]]] = {}
-    for ann in annotations:
-        by_page.setdefault(int(ann["page"]), []).append(ann)
+    by_page: dict[int, list[Finding]] = {}
+    for finding in findings:
+        by_page.setdefault(finding.page, []).append(finding)
     for idx, page in enumerate(reader.pages, start=1):
         width = float(page.mediabox.width)
         height = float(page.mediabox.height)
-        overlay_path = output_pdf.with_name(f".{output_pdf.stem}-overlay-{idx}.pdf")
-        canvas = Canvas(str(overlay_path), pagesize=(width, height))
+        overlay_buffer = BytesIO()
+        canvas = Canvas(overlay_buffer, pagesize=(width, height))
         canvas.setStrokeColor(Color(1, 0.55, 0, alpha=0.8))
         canvas.setDash(4, 3)
         threshold = width * ratio
         canvas.line(threshold, 0, threshold, height)
         canvas.setDash()
-        for ann in by_page.get(idx, []):
-            y = height - ann["bottom"]
-            h = ann["bottom"] - ann["top"]
+        for finding in by_page.get(idx, []):
+            x0, x1, top, bottom = finding.bbox
+            y = height - bottom
+            h = bottom - top
             canvas.setStrokeColor(red)
             canvas.setFillColor(Color(1, 0, 0, alpha=0.08))
-            canvas.rect(ann["x0"], y, ann["x1"] - ann["x0"], h, fill=1, stroke=1)
+            canvas.rect(x0, y, x1 - x0, h, fill=1, stroke=1)
             canvas.setFillColor(yellow)
             canvas.setFont("Helvetica", 6)
-            canvas.drawString(ann["x0"], y + h + 1, f"tail x={ann['last_char_x1']:.1f}")
+            canvas.drawString(x0, y + h + 1, f"tail x={finding.last_char_x1:.1f}")
         canvas.save()
-        overlay = PdfReader(str(overlay_path)).pages[0]
+        overlay_buffer.seek(0)
+        overlay = PdfReader(overlay_buffer).pages[0]
         page.merge_page(overlay)
         writer.add_page(page)
-        overlay_path.unlink(missing_ok=True)
-    output_pdf.parent.mkdir(parents=True, exist_ok=True)
     with output_pdf.open("wb") as stream:
         writer.write(stream)
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Detect short-tail paragraphs in ICLR/NeurIPS-style PDFs.")
+    parser = argparse.ArgumentParser(description="Detect short-tail paragraphs in ICLR-style PDFs.")
     parser.add_argument("input_pdf", type=Path)
     parser.add_argument("--output", type=Path, default=None, help="annotated PDF path (default: <input>.tail-marked.pdf)")
     parser.add_argument("--ratio", type=float, default=2 / 3, help="right-edge threshold as a fraction of page width (default: 0.666667)")
-    parser.add_argument("--template", choices=["auto", "iclr", "neurips", "nips"], default="auto")
     args = parser.parse_args()
     if not 0 < args.ratio < 1:
         parser.error("--ratio must be between 0 and 1")
     if not args.input_pdf.exists():
         parser.error(f"input does not exist: {args.input_pdf}")
     output_pdf = args.output or args.input_pdf.with_name(f"{args.input_pdf.stem}.tail-marked.pdf")
-    findings, annotations = scan_pdf(args.input_pdf, args.ratio, args.template)
-    _write_annotated(args.input_pdf, output_pdf, annotations, args.ratio)
+    findings = scan_pdf(args.input_pdf, args.ratio)
+    _write_annotated(args.input_pdf, output_pdf, findings, args.ratio)
     print(f"短尾段数量: {len(findings)}")
     print(f"标记规则: 最后可见字符右边界 x1 < 页面宽度 × {args.ratio:g}")
     print(f"标记 PDF: {output_pdf.resolve()}")
