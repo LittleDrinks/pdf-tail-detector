@@ -12,7 +12,7 @@
 
 ```sh
 python3.12 -m venv .venv
-.venv/bin/pip install -r requirements/model.txt
+.venv/bin/pip install -r requirements-model.txt
 .venv/bin/python scripts/prepare_model.py --export
 .venv/bin/python pdf_tail_detector.py paper.pdf
 ```
@@ -24,7 +24,7 @@ python3.12 -m venv .venv
 ## 测试
 
 ```sh
-.venv/bin/pip install -r requirements/test.txt
+.venv/bin/pip install -r requirements-test.txt
 .venv/bin/python -m pytest -q
 .venv/bin/ruff check .
 ```

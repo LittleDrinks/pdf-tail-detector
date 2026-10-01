@@ -77,7 +77,7 @@ def _reuse_export(directory: Path, manifest: dict) -> None:
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--model-dir", type=Path, default=Path("outputs/cache/models/PP-DocLayout-M"))
-    parser.add_argument("--export", action="store_true", help="requires requirements/model.txt")
+    parser.add_argument("--export", action="store_true", help="requires requirements-model.txt")
     args = parser.parse_args()
     prepare(args.model_dir, args.export)
     print(f"Model ready: {args.model_dir}")
