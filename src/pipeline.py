@@ -156,11 +156,20 @@ def _remove_annotations(page) -> None:
 
 
 def _mark_tail(page, item) -> None:
-    annotation = page.add_rect_annot(pymupdf.Rect(item["bbox"]))
-    annotation.set_colors(stroke=(1, 0, 0) if item["status"] == "checked" else (.7, .35, 1))
+    box = (pymupdf.Rect(item["bbox"]) + (-1.5, -1.5, 1.5, 1.5)) & (page.rect * page.derotation_matrix)
+    color = (1, 0, 0) if item["status"] == "checked" else (.7, .35, 1)
+    # Separate fill and outline so only the fill inherits the original 8% opacity.
+    fill = page.add_rect_annot(box)
+    fill.set_colors(stroke=color, fill=color)
+    fill.set_border(width=0)
+    fill.set_opacity(.08)
+    fill.set_info(title=ANNOTATION_TITLE, content="short-tail fill")
+    fill.update()
+    annotation = page.add_rect_annot(box)
+    annotation.set_colors(stroke=color)
     annotation.set_border(width=1)
     annotation.set_info(title=ANNOTATION_TITLE, content=json.dumps({key: item[key] for key in
-                        ("paragraph_id", "final_line", "tail_ratio", "threshold_x", "status", "end_reason")}, ensure_ascii=False))
+                        ("paragraph_id", "final_line", "last_char_x1", "tail_ratio", "threshold_x", "status", "end_reason")}, ensure_ascii=False))
     annotation.update()
 
 

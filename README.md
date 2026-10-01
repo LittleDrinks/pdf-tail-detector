@@ -29,4 +29,4 @@ python3.12 -m venv .venv
 .venv/bin/ruff check .
 ```
 
-源码在 `src/`，测试与夹具在 `test/`，演示图在 `assets/`。模型、报告和日志统一放入 `outputs/`，该目录已被 Git 忽略。
+源码在 `src/`，测试与夹具在 `test/`，演示图在 `assets/`。模型、报告和日志统一放入 `outputs/`。

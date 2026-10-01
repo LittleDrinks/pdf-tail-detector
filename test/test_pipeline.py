@@ -116,6 +116,10 @@ def test_rotation_crop_mapping_and_annotation_does_not_change_text(tmp_path, rot
         assert guide.border["width"] == 1
         assert guide.opacity == pytest.approx(.8)
         assert guide.colors["stroke"] == pytest.approx((1, .55, 0))
+        fills = [item for item in annotations if item.type[1] == "Square" and item.colors["fill"]]
+        assert len(fills) == 2
+        assert fills[0].colors["fill"] == pytest.approx((1, 0, 0))
+        assert fills[0].opacity == pytest.approx(.08)
         assert any(item.info["title"] == "Reader" for item in annotations)
         marked_rgb, _ = render_page(page, 123)
         assert (marked_rgb == rgb).all()
