@@ -178,16 +178,25 @@ def _mark_tail(page, item) -> None:
     annotation.update()
 
 
-def _page_thresholds(page, report) -> set[float]:
+def _page_guides(page, report) -> set[tuple[float, float, float]]:
     config = report["config"]
+    size = page.rect * page.derotation_matrix
     if config["page_ratio"] is not None:
-        return {(page.rect * page.derotation_matrix).width * config["page_ratio"]}
+        return {(size.width * config["page_ratio"], 0, size.height)}
     left, right, support = config["body_bounds"]
-    thresholds = {item["threshold_x"] for item in report["paragraphs"]
-                  if item["page"] == page.number + 1 and item["body_bounds"]["reliable"]}
+    global_x = left + config["tail_ratio"] * (right - left)
+    guides = set()
     if support >= 2:
-        thresholds.add(left + config["tail_ratio"] * (right - left))
-    return thresholds
+        guides.add((global_x, 0, size.height))
+    regions = next((data["regions"] for data in report["pages"] if data["page"] == page.number + 1), [])
+    boxes = {region["id"]: region["bbox"] for region in regions}
+    local = (item for item in report["paragraphs"] if item["page"] == page.number + 1
+             and item["body_bounds"]["reliable"] and item["body_bounds"]["source"] != "document_alignment"
+             and (support < 2 or not math.isclose(item["threshold_x"], global_x, abs_tol=.25)))
+    for item in local:
+        box = boxes.get(item["region"]["id"], item["bbox"])
+        guides.add((item["threshold_x"], max(0, box[1]), min(size.height, box[3])))
+    return guides
 
 
 def _mark_diagnostics(pdf, report) -> None:
@@ -205,9 +214,8 @@ def _mark_diagnostics(pdf, report) -> None:
 
 def _mark_page(page, report) -> None:
     _remove_annotations(page)
-    for x in sorted(_page_thresholds(page, report)):
-        height = (page.rect * page.derotation_matrix).height
-        annotation = page.add_line_annot((x, 0), (x, height))
+    for x, y0, y1 in sorted(_page_guides(page, report)):
+        annotation = page.add_line_annot((x, y0), (x, y1))
         annotation.set_colors(stroke=(1, .55, 0))
         annotation.set_opacity(.8)
         annotation.set_border(width=1, dashes=[4, 3])
