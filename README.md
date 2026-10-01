@@ -2,9 +2,9 @@
 
 找出论文正文末行过短的段落，在 PDF 中标记位置。适用于有文字层的英文单栏论文，无需 TeX 源码，使用 CPU 运行。
 
-![检测结果：算法区域未标记，正文短尾以红框标出](assets/demo.png)
+![正文短尾以红框标出](assets/demo.png)
 
-红框是短尾候选，橙线是阈值。示例取自 [What does automatic differentiation compute for neural networks?](test/fixtures/iclr/what-does-automatic-differentiation-compute.pdf) 第 7 页。
+红框是短尾候选，橙色虚线是阈值。示例取自 [What does automatic differentiation compute for neural networks?](test/fixtures/iclr/what-does-automatic-differentiation-compute.pdf) 第 7 页。
 
 ## 使用
 
@@ -26,6 +26,7 @@ python3.12 -m venv .venv
 ```sh
 .venv/bin/pip install -r requirements/test.txt
 .venv/bin/python -m pytest -q
+.venv/bin/ruff check .
 ```
 
 源码在 `src/`，测试与夹具在 `test/`，演示图在 `assets/`。模型、报告和日志统一放入 `outputs/`，该目录已被 Git 忽略。

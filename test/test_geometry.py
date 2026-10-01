@@ -5,37 +5,37 @@ import pymupdf
 import pytest
 from reportlab.pdfgen.canvas import Canvas
 
-from src.legacy import Line, _is_display_math_line, _looks_structural, _without_algorithm_blocks, scan_pdf
+from src import scan_pdf
+from src.layout import Glyph, PageData, TextLine
+from src.paragraphs import refine_page
 
 
-class _Page:
-    width = 612
-    height = 792
+def _line(text: str, top: float, fontname: str = "NimbusRomNo9L-Regu") -> TextLine:
+    glyphs = [Glyph(char, (100 + i * 5, top, 105 + i * 5, top + 10),
+                    (100 + i * 5, top + 8), 10, fontname, text) for i, char in enumerate(text)]
+    return TextLine(2, text, glyphs, text, (100, top, 100 + len(text) * 5, top + 10), top + 8, 10)
 
 
-def _char(text: str, fontname: str = "NimbusRomNo9L-Regu") -> dict:
-    return {"text": text, "x0": 0, "x1": 5, "top": 0, "bottom": 10, "size": 10, "fontname": fontname}
-
-
-def _line(text: str, top: float, fontname: str = "NimbusRomNo9L-Regu") -> Line:
-    chars = [_char(char, fontname) for char in text]
-    return Line(chars, text, 100, 100 + max(5, len(text) * 5), top, top + 10, "left", 10)
+def _refine(lines):
+    page = PageData(2, 612, 792, 0, (0, 0, 612, 792), lines)
+    refine_page(page, 10, False)
+    return page.lines
 
 
 def test_algorithm_environment_is_removed_as_one_block():
     lines = [
-        _line("Algorithm 1 Calibrated correction", 0),
-        _line("Require: candidate actions", 10),
-        _line("1: for each state do", 20),
-        _line("4: end for", 30),
-        _line("5: Sort the distinct values", 40),
-        _line("6: for thresholds do", 50),
-        _line("10: end if", 60),
-        _line("11: end for", 70),
-        _line("A normal paragraph resumes here.", 100),
+        _line("Algorithm 1 Calibrated correction", 100),
+        _line("Require: candidate actions", 110),
+        _line("1: for each state do", 120),
+        _line("4: end for", 130),
+        _line("5: Sort the distinct values", 140),
+        _line("6: for thresholds do", 150),
+        _line("10: end if", 160),
+        _line("11: end for", 170),
+        _line("A normal paragraph resumes here.", 200),
     ]
 
-    remaining = _without_algorithm_blocks(lines)
+    remaining = [line for line in _refine(lines) if line.kind != "excluded"]
 
     assert [line.text for line in remaining] == ["A normal paragraph resumes here."]
 
@@ -43,14 +43,13 @@ def test_algorithm_environment_is_removed_as_one_block():
 def test_math_fragment_is_candidate_safe_without_being_structural():
     fragment = _line("s", 100, "IFMQPP+CMMI5")
 
-    assert _is_display_math_line(fragment, _Page(), 10)
-    assert not _looks_structural(fragment, _Page(), 10)
+    assert _refine([fragment])[0].kind == "math"
 
 
 def test_annotation_label_is_structural_metadata():
     annotation = _line("tail x=338.7", 100, "Helvetica")
 
-    assert _looks_structural(annotation, _Page(), 10)
+    assert _refine([annotation])[0].reason == "legacy_annotation"
 
 
 def test_margin_line_numbers_do_not_split_tail_and_split_references_stop_scan(tmp_path):
@@ -109,3 +108,19 @@ def test_iclr_papers_keep_prose_tails_and_drop_algorithm_steps(filename, algorit
     assert not any(re.match(r"^\([a-z]\)\s", finding.final_line) for finding in findings)
     for anchor in tail_anchors:
         assert any(anchor in finding.final_line for finding in findings)
+
+
+def test_scan_pdf_keeps_the_original_bbox_order(tmp_path):
+    from src.pipeline import analyze_pdf
+    path = tmp_path / "compat.pdf"
+    canvas = Canvas(str(path), pagesize=(612, 792))
+    canvas.setFont("Times-Roman", 10)
+    canvas.drawString(108, 692, "This paragraph introduces a complete ordinary explanation with enough words")
+    canvas.drawString(108, 680, "and ends here.")
+    canvas.save()
+    item = analyze_pdf(path, backend="none", page_ratio=2 / 3)["candidates"][0]
+    finding = scan_pdf(path)[0]
+    x0, y0, x1, y1 = item["bbox"]
+    assert finding.bbox == (x0, x1, y0, y1)
+    assert finding.threshold_x == 408
+    assert finding.final_line == item["final_line"]

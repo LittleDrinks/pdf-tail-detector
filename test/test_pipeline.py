@@ -5,8 +5,16 @@ import pytest
 from reportlab.pdfbase.pdfmetrics import stringWidth
 from reportlab.pdfgen.canvas import Canvas
 
+from src.layout import (
+    Glyph,
+    PageData,
+    Region,
+    TextLine,
+    associate,
+    map_box,
+    render_page,
+)
 from src.paragraphs import Paragraph, measure
-from src.layout import Glyph, PageData, Region, TextLine, associate, map_box, render_page
 from src.pipeline import analyze_pdf, write_annotated
 
 
@@ -78,6 +86,9 @@ def test_rotation_crop_mapping_and_annotation_does_not_change_text(tmp_path, rot
         if crop:
             pdf[0].set_cropbox(pymupdf.Rect(50, 50, 562, 742))
         pdf[0].set_rotation(rotation)
+        note = pdf[0].add_text_annot((20, 20), "A reader's note")
+        note.set_info(title="Reader")
+        note.update()
         pdf.save(path)
     with pymupdf.open(path) as pdf:
         words = pdf[0].get_text("words")
@@ -94,9 +105,45 @@ def test_rotation_crop_mapping_and_annotation_does_not_change_text(tmp_path, rot
     with pymupdf.open(path) as before, pymupdf.open(output) as after:
         assert before[0].get_text() == after[0].get_text()
         assert before[0].rotation == after[0].rotation
-        assert list(after[0].annots())
+        page = after[0]
+        annotations = list(page.annots())
+        guides = [item for item in annotations if item.type[1] == "Line"]
+        assert len(guides) == 1
+        guide = guides[0]
+        assert guide.vertices[0] == pytest.approx((report["candidates"][0]["threshold_x"], 0))
+        assert guide.vertices[1] == pytest.approx((report["candidates"][0]["threshold_x"], 692 if crop else 792))
+        assert guide.border["dashes"] == (4, 3)
+        assert guide.border["width"] == 1
+        assert guide.opacity == pytest.approx(.8)
+        assert guide.colors["stroke"] == pytest.approx((1, .55, 0))
+        assert any(item.info["title"] == "Reader" for item in annotations)
+        marked_rgb, _ = render_page(page, 123)
+        assert (marked_rgb == rgb).all()
     repeated = analyze_pdf(output, backend="none")
     assert [f["bbox"] for f in repeated["candidates"]] == [f["bbox"] for f in report["candidates"]]
+    rerun = tmp_path / "rerun.pdf"
+    write_annotated(output, rerun, repeated)
+    with pymupdf.open(rerun) as pdf:
+        page = pdf[0]
+        assert len(list(page.annots())) == len(annotations)
+
+
+def test_page_ratio_guide_is_present_without_candidates(tmp_path):
+    path = tmp_path / "blank.pdf"
+    with pymupdf.open() as pdf:
+        pdf.new_page(width=612, height=792)
+        pdf.new_page(width=612, height=792)
+        pdf.save(path)
+    report = analyze_pdf(path, backend="none", page_ratio=2 / 3)
+    assert not report["candidates"]
+    output = tmp_path / "marked.pdf"
+    write_annotated(path, output, report)
+    with pymupdf.open(output) as pdf:
+        for page in pdf:
+            guides = list(page.annots())
+            assert len(guides) == 1
+            assert guides[0].vertices == [(408, 0), (408, 792)]
+            assert guides[0].border["dashes"] == (4, 3)
 
 
 def test_qed_is_peripheral_only_in_proof_and_rightmost_extent_is_used():

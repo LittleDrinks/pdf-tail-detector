@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """One-to-one endpoint scoring against detector-independent frozen labels."""
 from __future__ import annotations
+
 import argparse
 import importlib.util
 import json
@@ -10,7 +11,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from src.layout import sha256
+from src.layout import sha256  # noqa: E402
 
 
 def close(pred: dict, label: dict) -> bool:

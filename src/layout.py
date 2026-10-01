@@ -14,7 +14,6 @@ from pathlib import Path
 import numpy as np
 import pymupdf
 
-
 LABELS = ("paragraph_title", "image", "text", "number", "abstract", "content",
           "figure_title", "formula", "table", "table_title", "reference", "doc_title",
           "footnote", "header", "algorithm", "footer", "seal", "chart_title", "chart",
@@ -90,9 +89,7 @@ def glyph_text(glyphs: list[Glyph]) -> str:
     ordered = sorted(glyphs, key=lambda g: (g.bbox[0], g.origin[1]))
     words: list[str] = []
     previous: Glyph | None = None
-    for glyph in ordered:
-        if not glyph.text.strip():
-            continue
+    for glyph in (glyph for glyph in ordered if glyph.text.strip()):
         if previous:
             gap = glyph.bbox[0] - previous.bbox[2]
             if gap > max(1.5, glyph.size * .18) and previous.text[-1:] not in "([{":
@@ -112,26 +109,23 @@ def make_line(page: int, identifier: str, glyphs: list[Glyph]) -> TextLine:
                     enclosing([g.bbox for g in visible]), baseline, size)
 
 
+def _extract_line(page: int, identifier: str, line: dict) -> TextLine | None:
+    # Rotated writing / vertical scripts are outside the English-paper scope.
+    if abs(line["dir"][0] - 1) > .01 or abs(line["dir"][1]) > .01:
+        return None
+    glyphs = [Glyph(char["c"], tuple(char["bbox"]), tuple(char["origin"]),
+                    float(span["size"]), span["font"], identifier)
+              for span in line["spans"] for char in span.get("chars", []) if char["c"].strip()]
+    return make_line(page, identifier, glyphs) if glyphs else None
+
+
 def extract_page(page: pymupdf.Page) -> PageData:
-    fragments: list[TextLine] = []
-    for bi, block in enumerate(page.get_text("rawdict")["blocks"]):
-        if block["type"] != 0:
-            continue
-        for li, line in enumerate(block["lines"]):
-            # Rotated writing / vertical scripts are outside the English-paper scope.
-            if abs(line["dir"][0] - 1) > .01 or abs(line["dir"][1]) > .01:
-                continue
-            glyphs = [Glyph(c["c"], tuple(c["bbox"]), tuple(c["origin"]),
-                            float(span["size"]), span["font"], f"{bi}:{li}")
-                      for span in line["spans"] for c in span.get("chars", [])
-                      if c["c"].strip()]
-            if glyphs:
-                fragments.append(make_line(page.number + 1, f"{bi}:{li}", glyphs))
-    rotation = page.rotation
-    # Page.rect is rotated; these dimensions belong to the text coordinate system.
+    raw_lines = [(f"{bi}:{li}", line) for bi, block in enumerate(page.get_text("rawdict")["blocks"])
+                 if block["type"] == 0 for li, line in enumerate(block["lines"])]
+    fragments = [_extract_line(page.number + 1, identifier, line) for identifier, line in raw_lines]
     size = page.rect * page.derotation_matrix
-    return PageData(page.number + 1, size.width, size.height, rotation,
-                    tuple(page.cropbox), fragments)
+    return PageData(page.number + 1, size.width, size.height, page.rotation,
+                    tuple(page.cropbox), [line for line in fragments if line is not None])
 
 
 def render_page(page: pymupdf.Page, dpi: float) -> tuple[np.ndarray, dict]:
@@ -141,7 +135,7 @@ def render_page(page: pymupdf.Page, dpi: float) -> tuple[np.ndarray, dict]:
     try:
         page.set_rotation(0)
         pix = page.get_pixmap(matrix=pymupdf.Matrix(scale, scale),
-                             colorspace=pymupdf.csRGB, alpha=False)
+                             colorspace=pymupdf.csRGB, alpha=False, annots=False)
         rgb = np.frombuffer(pix.samples, dtype=np.uint8).reshape(pix.height, pix.width, 3).copy()
         geometry = {"rotation_normalized": rotation, "scale": scale,
                     "pixmap_origin": [pix.x, pix.y], "pixels": [pix.width, pix.height],
@@ -168,71 +162,84 @@ def model_inputs(rgb: np.ndarray) -> dict[str, np.ndarray]:
             "scale_factor": np.array([[640 / height, 640 / width]], np.float32)}
 
 
+def _model_manifest(model_dir: Path, backend: str) -> dict:
+    if not model_dir.is_dir():
+        raise FileNotFoundError(f"Model missing: {model_dir}. Run scripts/prepare_model.py first.")
+    manifest_path = model_dir / "manifest.json"
+    if not manifest_path.is_file():
+        raise ValueError("Model manifest missing; use scripts/prepare_model.py to verify the weights.")
+    manifest = json.loads(manifest_path.read_text())
+    if manifest.get("revision") != MODEL_REVISION or manifest.get("labels") != list(LABELS):
+        raise ValueError("Expected the pinned 23-class PP-DocLayout-M model.")
+    _verify_weights(model_dir, manifest, backend)
+    return manifest
+
+
+def _verify_weights(model_dir: Path, manifest: dict, backend: str) -> None:
+    required = ["model.onnx"] if backend == "onnx" else ["inference.json", "inference.pdiparams"]
+    for name in required:
+        expected = manifest.get("sha256", {}).get(name)
+        if not expected or sha256(model_dir / name) != expected:
+            raise ValueError(f"Model checksum mismatch: {name}")
+
+
+def _onnx_session(model_dir: Path, threads: int):
+    import onnxruntime as ort
+    options = ort.SessionOptions()
+    options.intra_op_num_threads = threads
+    options.inter_op_num_threads = 1
+    options.log_severity_level = 3
+    session = ort.InferenceSession(str(model_dir / "model.onnx"), options, providers=["CPUExecutionProvider"])
+    return session, [entry.name for entry in session.get_inputs()], ort.__version__
+
+
+def _paddle_session(model_dir: Path, threads: int):
+    import paddle
+    from paddle.inference import Config, create_predictor
+    config = Config(str(model_dir / "inference.json"), str(model_dir / "inference.pdiparams"))
+    config.disable_gpu()
+    # Paddle 3.3's default oneDNN PIR pass rejects this model's scale attributes.
+    config.disable_mkldnn()
+    config.set_cpu_math_library_num_threads(threads)
+    config.disable_glog_info()
+    session = create_predictor(config)
+    return session, session.get_input_names(), paddle.__version__
+
+
+def _decoded_boxes(outputs) -> np.ndarray:
+    boxes = next((output for output in outputs if output.ndim == 2 and output.shape[1] == 6), None)
+    if boxes is None:
+        raise ValueError(f"Expected decoded [class,score,x0,y0,x1,y1], got {[output.shape for output in outputs]}")
+    if not np.isfinite(boxes).all():
+        raise ValueError("Model returned non-finite coordinates.")
+    return boxes
+
+
 class PPDocLayout:
     def __init__(self, model_dir: Path, threads: int = 2, backend: str = "onnx"):
-        if not model_dir.is_dir():
-            raise FileNotFoundError(f"Model missing: {model_dir}. Run scripts/prepare_model.py first.")
-        manifest_path = model_dir / "manifest.json"
-        if not manifest_path.is_file():
-            raise ValueError("Model manifest missing; use scripts/prepare_model.py to verify the weights.")
-        manifest = json.loads(manifest_path.read_text())
-        if manifest.get("revision") != MODEL_REVISION or manifest.get("labels") != list(LABELS):
-            raise ValueError("Expected the pinned 23-class PP-DocLayout-M model.")
-        required = ["model.onnx"] if backend == "onnx" else ["inference.json", "inference.pdiparams"]
-        for name in required:
-            expected = manifest.get("sha256", {}).get(name)
-            if not expected or sha256(model_dir / name) != expected:
-                raise ValueError(f"Model checksum mismatch: {name}")
-        self.backend = backend
-        self.threads = threads
-        self.manifest = manifest
-        if backend == "onnx":
-            import onnxruntime as ort
-            options = ort.SessionOptions()
-            options.intra_op_num_threads = threads
-            options.inter_op_num_threads = 1
-            options.log_severity_level = 3
-            self.session = ort.InferenceSession(str(model_dir / "model.onnx"), options,
-                                                providers=["CPUExecutionProvider"])
-            self.names = [entry.name for entry in self.session.get_inputs()]
-            self.version = ort.__version__
-        elif backend == "paddle":
-            import paddle
-            from paddle.inference import Config, create_predictor
-            config = Config(str(model_dir / "inference.json"), str(model_dir / "inference.pdiparams"))
-            config.disable_gpu()
-            # Paddle 3.3's default oneDNN PIR pass rejects this model's scale attributes.
-            # Plain CPU kernels supply the independent conversion reference.
-            config.disable_mkldnn()
-            config.set_cpu_math_library_num_threads(threads)
-            config.disable_glog_info()
-            self.session = create_predictor(config)
-            self.names = self.session.get_input_names()
-            self.version = paddle.__version__
-        else:
+        factories = {"onnx": _onnx_session, "paddle": _paddle_session}
+        if backend not in factories:
             raise ValueError(f"Unknown backend: {backend}")
+        self.manifest = _model_manifest(model_dir, backend)
+        self.backend, self.threads = backend, threads
+        self.session, self.names, self.version = factories[backend](model_dir, threads)
+
+    def _paddle_outputs(self, inputs):
+        for key in self.names:
+            handle = self.session.get_input_handle(key)
+            handle.reshape(inputs[key].shape)
+            handle.copy_from_cpu(inputs[key])
+        self.session.run()
+        return [self.session.get_output_handle(key).copy_to_cpu() for key in self.session.get_output_names()]
 
     def raw(self, rgb: np.ndarray) -> np.ndarray:
         inputs = model_inputs(rgb)
         unexpected = set(self.names) - set(inputs)
         if unexpected:
             raise ValueError(f"Unrecognized model inputs: {unexpected}")
-        if self.backend == "onnx":
-            outputs = self.session.run(None, {key: inputs[key] for key in self.names})
-        else:
-            for key in self.names:
-                handle = self.session.get_input_handle(key)
-                handle.reshape(inputs[key].shape)
-                handle.copy_from_cpu(inputs[key])
-            self.session.run()
-            outputs = [self.session.get_output_handle(key).copy_to_cpu()
-                       for key in self.session.get_output_names()]
-        boxes = next((o for o in outputs if o.ndim == 2 and o.shape[1] == 6), None)
-        if boxes is None:
-            raise ValueError(f"Expected decoded [class,score,x0,y0,x1,y1], got {[o.shape for o in outputs]}")
-        if not np.isfinite(boxes).all():
-            raise ValueError("Model returned non-finite coordinates.")
-        return boxes
+        outputs = (self.session.run(None, {key: inputs[key] for key in self.names})
+                   if self.backend == "onnx" else self._paddle_outputs(inputs))
+        return _decoded_boxes(outputs)
 
     def predict(self, rgb: np.ndarray, geometry: dict, page: int, score: float = .5) -> list[Region]:
         height, width = rgb.shape[:2]
@@ -276,28 +283,37 @@ def associate(lines: list[TextLine], regions: list[Region]) -> None:
         line.reason = f"model:{region.label}"
 
 
-def merge_visual_lines(lines: list[TextLine], body_size: float) -> list[TextLine]:
-    """Join baseline fragments, then attach small inline superscripts locally."""
-    ordered = sorted(lines, key=lambda line: (line.baseline, line.bbox[0]))
+def _join_glyphs(target: TextLine, fragment: TextLine, repair: str) -> None:
+    target.glyphs.extend(fragment.glyphs)
+    target.text = glyph_text(target.glyphs)
+    target.bbox = enclosing([glyph.bbox for glyph in target.glyphs])
+    target.repairs.append(f"{repair}:{fragment.id}")
+
+
+def _join_baseline(target: TextLine, fragment: TextLine) -> None:
+    _join_glyphs(target, fragment, "baseline_join")
+    if fragment.kind == "body":
+        target.kind = "body"
+        if target.region_label not in {"text", "abstract", "content"}:
+            target.region_id, target.region_score, target.region_label = fragment.region_id, fragment.region_score, fragment.region_label
+            target.reason = fragment.reason
+
+
+def _merge_baselines(lines: list[TextLine], body_size: float) -> list[TextLine]:
     merged: list[TextLine] = []
-    for fragment in ordered:
+    for fragment in sorted(lines, key=lambda line: (line.baseline, line.bbox[0])):
         near = [line for line in merged[-12:]
                 if abs(line.baseline - fragment.baseline) < max(1.8, body_size * .18)
                 and (line.kind == fragment.kind or {line.kind, fragment.kind} <= {"body", "math", "unknown"})
                 and (fragment.bbox[0] <= line.bbox[2] + body_size * 2 or fragment.text in {"□", "■", "◻", "◼", "▢", "∎"})]
         if near:
-            target = min(near, key=lambda line: abs(line.baseline - fragment.baseline))
-            target.glyphs.extend(fragment.glyphs)
-            target.text = glyph_text(target.glyphs)
-            target.bbox = enclosing([g.bbox for g in target.glyphs])
-            if fragment.kind == "body":
-                target.kind = "body"
-                if target.region_label not in {"text", "abstract", "content"}:
-                    target.region_id, target.region_score, target.region_label = fragment.region_id, fragment.region_score, fragment.region_label
-                    target.reason = fragment.reason
-            target.repairs.append(f"baseline_join:{fragment.id}")
+            _join_baseline(min(near, key=lambda line: abs(line.baseline - fragment.baseline)), fragment)
         else:
             merged.append(fragment)
+    return merged
+
+
+def _attach_inline(merged: list[TextLine], body_size: float) -> None:
     for fragment in list(merged):
         if fragment.kind == "excluded" or len(fragment.text) > 25:
             continue
@@ -309,9 +325,12 @@ def merge_visual_lines(lines: list[TextLine], body_size: float) -> list[TextLine
                    and fragment.bbox[0] <= line.bbox[2] + body_size * 3]
         if targets:
             target = min(targets, key=lambda line: abs(line.baseline - fragment.baseline))
-            target.glyphs.extend(fragment.glyphs)
-            target.text = glyph_text(target.glyphs)
-            target.bbox = enclosing([g.bbox for g in target.glyphs])
-            target.repairs.append(f"inline_fragment:{fragment.id}")
+            _join_glyphs(target, fragment, "inline_fragment")
             merged.remove(fragment)
+
+
+def merge_visual_lines(lines: list[TextLine], body_size: float) -> list[TextLine]:
+    """Join baseline fragments, then attach small inline superscripts locally."""
+    merged = _merge_baselines(lines, body_size)
+    _attach_inline(merged, body_size)
     return sorted(merged, key=lambda line: (line.baseline, line.bbox[0]))

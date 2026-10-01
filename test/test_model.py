@@ -1,6 +1,8 @@
 """Real-weight regressions; absent weights are explicitly skipped."""
 from pathlib import Path
+
 import pytest
+
 from src import analyze_pdf
 
 MODEL = Path(__file__).resolve().parents[1] / "outputs/models/PP-DocLayout-M"
