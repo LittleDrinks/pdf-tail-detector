@@ -3,11 +3,12 @@
 from __future__ import annotations
 
 import argparse
-import importlib.util
 import json
+import subprocess
 import sys
 from dataclasses import asdict
 from pathlib import Path
+from types import ModuleType
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
@@ -55,10 +56,11 @@ def evaluate(labels: dict, predictions: list[dict], policy: str, review: list[di
 
 
 def baseline_predictions(path: Path) -> list[dict]:
-    spec = importlib.util.spec_from_file_location("frozen_baseline", ROOT / "outputs/verification/baseline/pdf_tail_detector.py")
-    module = importlib.util.module_from_spec(spec)
-    sys.modules[spec.name] = module
-    spec.loader.exec_module(module)
+    source = subprocess.run(["git", "show", "4562944:pdf_tail_detector.py"], cwd=ROOT,
+                            check=True, capture_output=True, text=True).stdout
+    module = ModuleType("frozen_baseline")
+    sys.modules[module.__name__] = module
+    exec(compile(source, "4562944:pdf_tail_detector.py", "exec"), module.__dict__)
     result = []
     for finding in module.scan_pdf(path):
         row = asdict(finding)

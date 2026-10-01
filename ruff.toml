@@ -1,4 +1,5 @@
 line-length = 120
+cache-dir = "outputs/cache/ruff"
 
 [lint]
 select = ["E4", "E7", "E9", "F", "I", "C90"]

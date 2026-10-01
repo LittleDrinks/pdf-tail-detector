@@ -51,8 +51,40 @@ def test_body_width_formula_bridge_and_short_single_line(tmp_path):
     assert "and is" not in ends
     assert "Our mathematical" in ends["where the terms are positive."]["paragraph_text"]
     assert ends["Short tail."]["threshold_x"] == pytest.approx(405, abs=.2)
-    assert report["coverage"]["stopped_at_references"]
+    assert report["coverage"]["references_excluded"]
     assert not any("citation" in item["final_line"] for item in report["candidates"])
+
+
+@pytest.mark.parametrize("same_page", [False, True])
+def test_appendix_resumes_after_references(tmp_path, same_page):
+    path = tmp_path / "appendix.pdf"
+    canvas = Canvas(str(path), pagesize=(612, 792))
+    row(canvas, 100, "The main section provides enough ordinary text to establish the measure.", full=True)
+    row(canvas, 112, "Main ending.")
+    row(canvas, 150, "References")
+    row(canvas, 170, "A citation ending.")
+    if not same_page:
+        canvas.showPage()
+        row(canvas, 100, "Another citation ending.")
+        canvas.showPage()
+    row(canvas, 220, "A", x=108)
+    row(canvas, 220, "ADDITIONAL PROOFS", x=130)
+    row(canvas, 250, "Lemma 1. This appendix statement fills the whole measure with ordinary prose.", full=True)
+    row(canvas, 262, "An appendix ending.")
+    row(canvas, 300, "Lemma 2. Our mathematical construction can be written in the following form", full=True)
+    row(canvas, 312, "and is")
+    row(canvas, 330, "x = y + 1", x=250)
+    row(canvas, 355, "Proof. The following ordinary paragraph fills the available text measure.", full=True)
+    row(canvas, 367, "Proof ending.")
+    canvas.save()
+    report = analyze_pdf(path, backend="none")
+    ends = {item["final_line"] for item in report["candidates"]}
+    assert {"Main ending.", "An appendix ending.", "Proof ending."} <= ends
+    assert not any("citation" in ending or ending == "and is" for ending in ends)
+    assert report["coverage"]["pages_processed"] == (1 if same_page else 3)
+    assert report["coverage"]["references_excluded"]
+    partial = analyze_pdf(path, backend="none", max_pages=1)
+    assert partial["status"] == ("complete" if same_page else "partial")
 
 
 def test_cross_page_only_reports_the_real_end(tmp_path):

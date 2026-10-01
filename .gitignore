@@ -2,6 +2,7 @@ __pycache__/
 *.pyc
 *.tail-marked.pdf
 /outputs/
+/inputs/
 .venv/
 .pytest_cache/
 *.tail-marked.json

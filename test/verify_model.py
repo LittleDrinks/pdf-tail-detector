@@ -16,8 +16,8 @@ from paddle.inference import Config, create_predictor
 from src.layout import PPDocLayout, model_inputs, render_page, sha256
 
 parser = argparse.ArgumentParser(description=__doc__)
-parser.add_argument("--model-dir", type=Path, default=Path("outputs/models/PP-DocLayout-M"))
-parser.add_argument("--output", type=Path, default=Path("outputs/verification/model-consistency.json"))
+parser.add_argument("--model-dir", type=Path, default=Path("outputs/cache/models/PP-DocLayout-M"))
+parser.add_argument("--output", type=Path, default=Path("outputs/checks/model-consistency.json"))
 args = parser.parse_args()
 converted = PPDocLayout(args.model_dir, 2)
 for name in ("inference.json", "inference.pdiparams"):

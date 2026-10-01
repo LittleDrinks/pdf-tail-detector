@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import re
 import sys
 import time
 from dataclasses import asdict
@@ -24,16 +25,19 @@ from .paragraphs import (
 )
 
 
-def references_y(lines) -> float | None:
+def _scope_headings(lines) -> list[tuple[float, bool]]:
     ordered = sorted(lines, key=lambda line: (line.baseline, line.bbox[0]))
+    headings = []
     for index, line in enumerate(ordered):
-        if normalized(line.text) == "references":
-            return line.bbox[1]
         pair = ordered[index:index + 2]
-        if (len(pair) == 2 and abs(pair[1].baseline - pair[0].baseline) <= 5
-                and normalized(pair[0].text + pair[1].text) == "references"):
-            return min(item.bbox[1] for item in pair)
-    return None
+        joined = " ".join(item.text for item in pair if abs(item.baseline - line.baseline) <= 5)
+        reference = any(normalized(text) == "references" for text in (line.text, joined))
+        appendix = any(re.match(r"^appendix\b", text, re.I)
+                       or (text.isupper() and re.match(r"^[A-Z](?:\.\d+)*\s+[A-Z]", text))
+                       for text in (line.text, joined))
+        if reference or appendix:
+            headings.append((line.bbox[1] - .1, reference))
+    return headings
 
 
 def _validate_ratios(tail_ratio, region_score, page_ratio) -> None:
@@ -54,41 +58,41 @@ def _validate_runtime(threads, dpi, max_pages, backend) -> None:
         raise ValueError(f"Unknown backend: {backend}")
 
 
-def _scope_page(data) -> bool:
-    cutoff = references_y(data.lines)
-    if cutoff is None:
-        return False
+def _scope_page(data, references: bool) -> bool:
+    headings = _scope_headings(data.lines)
     for line in data.lines:
-        if line.bbox[1] >= cutoff - .1:
-            line.kind, line.reason = "excluded", "references_and_appendix"
-    return True
+        in_references = next((state for y, state in reversed(headings) if line.bbox[1] >= y), references)
+        if in_references:
+            line.kind, line.reason = "excluded", "references"
+    return headings[-1][1] if headings else references
 
 
-def _read_page(page, model, dpi, region_score):
+def _read_page(page, model, dpi, region_score, references):
     data = extract_page(page)
-    references = _scope_page(data)
+    references = _scope_page(data, references)
+    active = [line for line in data.lines if line.reason != "references"]
     if not data.lines:
         data.status = "no_text_layer" if page.get_images() else "blank"
-    elif model:
+    elif model and active:
         rgb, data.geometry = render_page(page, dpi)
         data.regions = model.predict(rgb, data.geometry, page.number + 1, region_score)
-        active = [line for line in data.lines if line.reason != "references_and_appendix"]
         associate(active, data.regions)
     return data, references
 
 
 def _read_pages(input_pdf, model, dpi, region_score, max_pages):
-    pages, references = [], False
+    pages, references, references_seen = [], False, False
     with pymupdf.open(input_pdf) as pdf:
         if pdf.needs_pass or not len(pdf):
             raise ValueError("PDF must contain pages and be decrypted.")
         total_pages = len(pdf)
         for index, page in enumerate(pdf):
-            if references or (max_pages and index >= max_pages):
+            if max_pages and index >= max_pages:
                 break
-            data, references = _read_page(page, model, dpi, region_score)
+            data, references = _read_page(page, model, dpi, region_score, references)
+            references_seen |= any(line.reason == "references" for line in data.lines)
             pages.append(data)
-    return pages, total_pages, references
+    return pages, total_pages, references_seen
 
 
 def _page_evidence(page) -> dict:
@@ -101,7 +105,7 @@ def _page_evidence(page) -> dict:
                        "region_id": line.region_id, "repairs": line.repairs} for line in page.lines]}
 
 
-def analyze_pdf(input_pdf: Path, *, model_dir: Path = Path("outputs/models/PP-DocLayout-M"),
+def analyze_pdf(input_pdf: Path, *, model_dir: Path = Path("outputs/cache/models/PP-DocLayout-M"),
                 backend: str = "onnx", tail_ratio: float = .75, page_ratio: float | None = None,
                 threads: int = 2, dpi: float = 150, region_score: float = .5,
                 max_pages: int | None = None) -> dict:
@@ -110,7 +114,7 @@ def analyze_pdf(input_pdf: Path, *, model_dir: Path = Path("outputs/models/PP-Do
     _validate_runtime(threads, dpi, max_pages, backend)
     started = time.perf_counter()
     model = PPDocLayout(model_dir, threads) if backend != "none" else None
-    pages, total_pages, references_started = _read_pages(input_pdf, model, dpi, region_score, max_pages)
+    pages, total_pages, references_seen = _read_pages(input_pdf, model, dpi, region_score, max_pages)
     size = body_size(pages)
     for page in pages:
         refine_page(page, size, model is not None)
@@ -124,19 +128,20 @@ def analyze_pdf(input_pdf: Path, *, model_dir: Path = Path("outputs/models/PP-Do
                         tail_ratio, page_ratio) for para in paragraphs]
     config = {"tail_ratio": tail_ratio, "page_ratio": page_ratio, "dpi": dpi,
               "region_score": region_score, "threads": threads, "max_pages": max_pages,
-              "rule_version": "pdf-body-tail-v1", "body_size": size, "body_bounds": list(bounds)}
+              "rule_version": "pdf-body-tail-v2", "body_size": size, "body_bounds": list(bounds)}
     candidates = [item for item in measured if item["eligible"] and item["is_short"] and item["status"] == "checked"]
     review = [item for item in measured if item["eligible"] and item["status"] == "review"]
     unsupported = [page.number for page in pages if page.status not in {"checked", "blank"}]
-    partial = bool(unsupported or review or (config["max_pages"] and len(pages) < total_pages and not references_started))
+    partial = bool(unsupported or review or (max_pages and len(pages) < total_pages))
     eligible = [item for item in measured if item["eligible"]]
     return {"schema_version": 2, "coordinate_system": "unrotated-crop-relative-xyxy",
             "input": {"path": str(input_pdf.resolve()), "sha256": sha256(input_pdf), "pages": total_pages},
-            "status": "partial" if partial else "complete", "scope": "single-column English ICLR-like text PDF, main matter",
+            "status": "partial" if partial else "complete",
+            "scope": "single-column English ICLR-like text PDF, main matter and appendices; references excluded",
             "config": config,
             "model": model.metadata() if model else {"backend": "none", "name": "explicit_geometry_baseline"},
             "coverage": {"pages_processed": len(pages), "pages_in_document": total_pages,
-                         "stopped_at_references": references_started, "unsupported_pages": unsupported,
+                         "references_excluded": references_seen, "unsupported_pages": unsupported,
                          "eligible_paragraphs": len(eligible), "checked_paragraphs": len(eligible) - len(review),
                          "review_paragraphs": len(review),
                          "checked_fraction": (len(eligible) - len(review)) / len(eligible) if eligible else None,
@@ -230,7 +235,7 @@ def cli(argv=None) -> int:
     parser.add_argument("input_pdf", type=Path)
     parser.add_argument("--output", type=Path)
     parser.add_argument("--json", dest="json_path", type=Path)
-    parser.add_argument("--model-dir", type=Path, default=Path("outputs/models/PP-DocLayout-M"))
+    parser.add_argument("--model-dir", type=Path, default=Path("outputs/cache/models/PP-DocLayout-M"))
     parser.add_argument("--backend", choices=("onnx", "none"), default="onnx")
     rule = parser.add_mutually_exclusive_group()
     rule.add_argument("--tail-ratio", type=float, default=.75, help="fraction of body width, default .75")
@@ -241,7 +246,7 @@ def cli(argv=None) -> int:
     parser.add_argument("--max-pages", type=int, help="explicit partial scan for diagnostics")
     parser.add_argument("--diagnostic", action="store_true", help="also annotate all model regions")
     args = parser.parse_args(argv)
-    output = args.output or Path("outputs") / f"{args.input_pdf.stem}.tail-marked.pdf"
+    output = args.output or Path("outputs/results") / f"{args.input_pdf.stem}.tail-marked.pdf"
     json_path = args.json_path or output.with_suffix(".json")
     resolved = [args.input_pdf.resolve(), output.resolve(), json_path.resolve()]
     if len(set(resolved)) != 3:
