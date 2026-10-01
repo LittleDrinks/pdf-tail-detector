@@ -30,7 +30,7 @@ def test_real_prose_tails_survive_inline_math_and_excluded_regions(filename, anc
 
 @pytest.mark.parametrize("filename", ["iclr/efficiently-computing-similarities.pdf",
                                      "iclr/what-does-automatic-differentiation-compute.pdf", "holdout/lora.pdf"])
-def test_first_page_has_one_full_guide_and_confined_local_guides(tmp_path, filename):
+def test_first_page_has_only_one_full_guide(tmp_path, filename):
     path = Path(__file__).parent / "fixtures" / filename
     report = analyze_pdf(path, model_dir=MODEL)
     output = tmp_path / "marked.pdf"
@@ -38,14 +38,9 @@ def test_first_page_has_one_full_guide_and_confined_local_guides(tmp_path, filen
     with pymupdf.open(path) as before, pymupdf.open(output) as after:
         page = after[0]
         guides = [a.vertices for a in page.annots() if a.type[1] == "Line"]
-        full = [v for v in guides if v[0][1] == 0 and v[1][1] == page.rect.height]
-        assert len(full) == 1
-        assert full[0][0][0] == pytest.approx(405, abs=.1)
-        abstract = [v for v in guides if abs(v[0][0] - 387.07) < .1]
-        assert len(abstract) == 1
-        assert 150 < abstract[0][0][1] < 300
-        assert 330 < abstract[0][1][1] < 500
-        assert all(0 < v[0][1] < v[1][1] < page.rect.height for v in guides if v not in full)
+        assert len(guides) == 1
+        assert guides[0][0] == pytest.approx((405, 0), abs=.1)
+        assert guides[0][1] == pytest.approx((405, page.rect.height), abs=.1)
         assert before[0].get_text() == page.get_text()
     rerun = tmp_path / "rerun.pdf"
     write_annotated(output, rerun, report)

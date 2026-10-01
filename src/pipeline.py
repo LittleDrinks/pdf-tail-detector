@@ -184,19 +184,9 @@ def _page_guides(page, report) -> set[tuple[float, float, float]]:
     if config["page_ratio"] is not None:
         return {(size.width * config["page_ratio"], 0, size.height)}
     left, right, support = config["body_bounds"]
-    global_x = left + config["tail_ratio"] * (right - left)
-    guides = set()
-    if support >= 2:
-        guides.add((global_x, 0, size.height))
-    regions = next((data["regions"] for data in report["pages"] if data["page"] == page.number + 1), [])
-    boxes = {region["id"]: region["bbox"] for region in regions}
-    local = (item for item in report["paragraphs"] if item["page"] == page.number + 1
-             and item["body_bounds"]["reliable"] and item["body_bounds"]["source"] != "document_alignment"
-             and (support < 2 or not math.isclose(item["threshold_x"], global_x, abs_tol=.25)))
-    for item in local:
-        box = boxes.get(item["region"]["id"], item["bbox"])
-        guides.add((item["threshold_x"], max(0, box[1]), min(size.height, box[3])))
-    return guides
+    if support < 2:
+        return set()
+    return {(left + config["tail_ratio"] * (right - left), 0, size.height)}
 
 
 def _mark_diagnostics(pdf, report) -> None:
