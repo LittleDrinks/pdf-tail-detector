@@ -1,0 +1,2852 @@
+{
+  "schema_version": 1,
+  "policy": "test/labels/LABELING.md",
+  "split": "development",
+  "annotation_method": "single Codex visual annotator; preliminary, not independently human-adjudicated",
+  "detector_used_for_labels": false,
+  "documents": [
+    {
+      "path": "test/fixtures/iclr/efficiently-computing-similarities.pdf",
+      "sha256": "ab6792bfa8fafdb48e567eb2b6ce0f8283817b3f39b86c4f056fe498e085f1fc",
+      "pages": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "endings": [
+        {
+          "id": "efficiently-computing-similarities:p1:y474.2",
+          "page": 1,
+          "paragraph_pages": [
+            1
+          ],
+          "bbox": [
+            143.86602783203125,
+            464.2442626953125,
+            420.99566650390625,
+            474.2068786621094
+          ],
+          "text_anchor": "fasterthanpriorDP-SGDbasedapproachesforcomparableaccuracy.",
+          "selected_bottom": 474.2,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            143.9,
+            468.1
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "efficiently-computing-similarities:p1:y705.9",
+          "page": 1,
+          "paragraph_pages": [
+            1
+          ],
+          "bbox": [
+            108.00003051757812,
+            694.1797485351562,
+            501.69476318359375,
+            704.3728637695312
+          ],
+          "text_anchor": "ℓdistancesbetween(embeddingsof)privateandsyntheticdatatoselectsyntheticrepresentatives.",
+          "selected_bottom": 705.9,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "efficiently-computing-similarities:p2:y105.2",
+          "page": 2,
+          "paragraph_pages": [
+            1,
+            2
+          ],
+          "bbox": [
+            108.0,
+            95.22743225097656,
+            486.52899169921875,
+            105.19003295898438
+          ],
+          "text_anchor": "betterDPmodelperformance(Yuetal.,2020;Lietal.,2021;Deetal.,2022;Yinetal.,2022).",
+          "selected_bottom": 105.2,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "efficiently-computing-similarities:p2:y242.7",
+          "page": 2,
+          "paragraph_pages": [
+            2
+          ],
+          "bbox": [
+            108.00003051757812,
+            232.71229553222656,
+            220.63719177246094,
+            242.67489624023438
+          ],
+          "text_anchor": "hasthehighestsimilarityto.",
+          "selected_bottom": 242.7,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "efficiently-computing-similarities:p2:y327.4",
+          "page": 2,
+          "paragraph_pages": [
+            2
+          ],
+          "bbox": [
+            108.00003051757812,
+            317.1976318359375,
+            373.86212158203125,
+            327.3907775878906
+          ],
+          "text_anchor": "ofvariousclusteringformulations,suchask-meansandk-median.",
+          "selected_bottom": 327.4,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "efficiently-computing-similarities:p2:y427.3",
+          "page": 2,
+          "paragraph_pages": [
+            2
+          ],
+          "bbox": [
+            108.00001525878906,
+            417.3851318359375,
+            434.5740661621094,
+            427.3477478027344
+          ],
+          "text_anchor": "empiricalimprovementsoverbaselines,bothintermsofaccuracyandquerytime.",
+          "selected_bottom": 427.3,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "efficiently-computing-similarities:p2:y483.5",
+          "page": 2,
+          "paragraph_pages": [
+            2
+          ],
+          "bbox": [
+            108.00006103515625,
+            473.55712890625,
+            367.5954895019531,
+            483.5197448730469
+          ],
+          "text_anchor": "outputmusthandlearbitrarilymanyquerieswithoutprivacyloss.",
+          "selected_bottom": 483.5,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "efficiently-computing-similarities:p2:y605.4",
+          "page": 2,
+          "paragraph_pages": [
+            2
+          ],
+          "bbox": [
+            108.00006103515625,
+            595.1224365234375,
+            504.00201416015625,
+            605.4447021484375
+          ],
+          "text_anchor": "whileouroutputsarealwaysprivate(sinceDitselfisprivate),somequeryoutputscanbeinaccurate.",
+          "selected_bottom": 605.4,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "efficiently-computing-similarities:p2:y647.1",
+          "page": 2,
+          "paragraph_pages": [
+            2
+          ],
+          "bbox": [
+            108.00006103515625,
+            636.00244140625,
+            468.0830993652344,
+            646.32470703125
+          ],
+          "text_anchor": "∥x−y∥)andKDEqueries(forkernelfunctionssuchasf(x,y)=e)asfollows:",
+          "selected_bottom": 647.1,
+          "eligible": false,
+          "uncertain": false,
+          "reason": "definition_leadin",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "efficiently-computing-similarities:p2:y674.2",
+          "page": 2,
+          "paragraph_pages": [
+            2
+          ],
+          "bbox": [
+            108.00009155273438,
+            661.2205810546875,
+            317.8907775878906,
+            671.2372436523438
+          ],
+          "text_anchor": "querycomputesanapproximationtof(x,y).",
+          "selected_bottom": 674.2,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "efficiently-computing-similarities:p2:y701.3",
+          "page": 2,
+          "paragraph_pages": [
+            2
+          ],
+          "bbox": [
+            108.00009155273438,
+            688.3209228515625,
+            308.5746765136719,
+            698.3375854492188
+          ],
+          "text_anchor": "computesanapproximationtof(x,y).",
+          "selected_bottom": 701.3,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "efficiently-computing-similarities:p2:y732.3",
+          "page": 2,
+          "paragraph_pages": [
+            2
+          ],
+          "bbox": [
+            108.00000762939453,
+            722.3064575195312,
+            390.89801025390625,
+            732.26904296875
+          ],
+          "text_anchor": "distancequeries,theun-normalizedversionseemedmorenaturaltous.",
+          "selected_bottom": 732.3,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "efficiently-computing-similarities:p3:y440.5",
+          "page": 3,
+          "paragraph_pages": [
+            3
+          ],
+          "bbox": [
+            108.00001525878906,
+            430.5203857421875,
+            460.8255310058594,
+            440.4830017089844
+          ],
+          "text_anchor": "theoreticalresultsaresummarizedinTable1,whereweusethefollowingerrornotation.",
+          "selected_bottom": 440.5,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "efficiently-computing-similarities:p3:y490.9",
+          "page": 3,
+          "paragraph_pages": [
+            3
+          ],
+          "bbox": [
+            107.99996948242188,
+            480.950927734375,
+            375.1670227050781,
+            490.91351318359375
+          ],
+          "text_anchor": "Theexpectationisovertherandomnessusedbyourdatastructure.",
+          "selected_bottom": 490.9,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "efficiently-computing-similarities:p3:y536.7",
+          "page": 3,
+          "paragraph_pages": [
+            3
+          ],
+          "bbox": [
+            107.99996948242188,
+            526.7533569335938,
+            308.62677001953125,
+            536.7159423828125
+          ],
+          "text_anchor": "technicaloverviewofhowweobtaintheseresults.",
+          "selected_bottom": 536.7,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "efficiently-computing-similarities:p3:y586.5",
+          "page": 3,
+          "paragraph_pages": [
+            3
+          ],
+          "bbox": [
+            108.0,
+            576.3358154296875,
+            489.5146789550781,
+            586.5289306640625
+          ],
+          "text_anchor": "Table1),wecanobtainadditiveerrorwithimproveddependenceondandnodependenceonn.",
+          "selected_bottom": 586.5,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "efficiently-computing-similarities:p3:y630.0",
+          "page": 3,
+          "paragraph_pages": [
+            3
+          ],
+          "bbox": [
+            108.00004577636719,
+            619.8406372070312,
+            504.0005798339844,
+            629.986572265625
+          ],
+          "text_anchor": "ε-DPdatastructureDcapableofansweringanyℓdistancequerywith1+α,Oerror.",
+          "selected_bottom": 630.0,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "efficiently-computing-similarities:p3:y650.0",
+          "page": 3,
+          "paragraph_pages": [
+            3
+          ],
+          "bbox": [
+            108.0,
+            638.89892578125,
+            495.7767028808594,
+            648.9155883789062
+          ],
+          "text_anchor": "Fortheℓcase,wherethepointshaveboundedℓdiameter,weobtainerror1+α,O.",
+          "selected_bottom": 650.0,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "efficiently-computing-similarities:p3:y732.3",
+          "page": 3,
+          "paragraph_pages": [
+            3
+          ],
+          "bbox": [
+            108.00003051757812,
+            722.075927734375,
+            395.14202880859375,
+            732.26904296875
+          ],
+          "text_anchor": "queriesforprivatedatasetsinthebox[0,R]mustincurΩ(Rd/ε)error.",
+          "selected_bottom": 732.3,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "efficiently-computing-similarities:p4:y106.3",
+          "page": 4,
+          "paragraph_pages": [
+            4
+          ],
+          "bbox": [
+            107.99993896484375,
+            96.26390075683594,
+            424.1976013183594,
+            106.28059387207031
+          ],
+          "text_anchor": "querieswithadditiveerroratmostTforanyquerymustsatisfyT=Ω(Rd/ε).",
+          "selected_bottom": 106.3,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "efficiently-computing-similarities:p4:y151.1",
+          "page": 4,
+          "paragraph_pages": [
+            4
+          ],
+          "bbox": [
+            107.99993896484375,
+            139.2778778076172,
+            468.1849060058594,
+            149.47103881835938
+          ],
+          "text_anchor": "Wealsoobtainresultsforotherfunctionsrelatedtodistances,suchasℓ;seeAppendixD.",
+          "selected_bottom": 151.1,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "efficiently-computing-similarities:p4:y208.1",
+          "page": 4,
+          "paragraph_pages": [
+            4
+          ],
+          "bbox": [
+            108.00003051757812,
+            197.7417755126953,
+            449.52667236328125,
+            208.06405639648438
+          ],
+          "text_anchor": "querytime.Thusourresultsarefasterinhigh-dimensionalregimeswhered≫1/α.",
+          "selected_bottom": 208.1,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "efficiently-computing-similarities:p4:y246.6",
+          "page": 4,
+          "paragraph_pages": [
+            4
+          ],
+          "bbox": [
+            108.0,
+            236.60789489746094,
+            501.0026550292969,
+            246.6245880126953
+          ],
+          "text_anchor": "anε-DPdatastructurethatanswersKDEquerieswitherror(1,α)andquerytimesO(d+1/α).",
+          "selected_bottom": 246.6,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "efficiently-computing-similarities:p4:y313.7",
+          "page": 4,
+          "paragraph_pages": [
+            4
+          ],
+          "bbox": [
+            107.99996948242188,
+            303.60491943359375,
+            493.8796081542969,
+            313.7439880371094
+          ],
+          "text_anchor": "twokernelsandtheCauchykernelfallunderthefamilyofsmoothkernels(Backursetal.,2018).",
+          "selected_bottom": 313.7,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "efficiently-computing-similarities:p4:y352.6",
+          "page": 4,
+          "paragraph_pages": [
+            4
+          ],
+          "bbox": [
+            108.00001525878906,
+            342.40484619140625,
+            309.1783447265625,
+            352.5979919433594
+          ],
+          "text_anchor": "datastructuresandarefasterinthelargedregime.",
+          "selected_bottom": 352.6,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "efficiently-computing-similarities:p4:y418.7",
+          "page": 4,
+          "paragraph_pages": [
+            4
+          ],
+          "bbox": [
+            108.00001525878906,
+            408.77703857421875,
+            241.11029052734375,
+            418.7396240234375
+          ],
+          "text_anchor": "icallythesameasinpriorworks.",
+          "selected_bottom": 418.7,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "efficiently-computing-similarities:p4:y530.6",
+          "page": 4,
+          "paragraph_pages": [
+            4
+          ],
+          "bbox": [
+            108.00003051757812,
+            520.6793823242188,
+            194.05697631835938,
+            530.6419677734375
+          ],
+          "text_anchor": "gibleadditionalerror.",
+          "selected_bottom": 530.6,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "efficiently-computing-similarities:p4:y624.3",
+          "page": 4,
+          "paragraph_pages": [
+            4
+          ],
+          "bbox": [
+            108.00003051757812,
+            614.2374267578125,
+            498.7028503417969,
+            624.2909545898438
+          ],
+          "text_anchor": "3ordersofmagnitudelessruntimecomparedtopriorbaselines(Yuetal.,2020;Deetal.,2022).",
+          "selected_bottom": 624.3,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "efficiently-computing-similarities:p4:y732.3",
+          "page": 4,
+          "paragraph_pages": [
+            4
+          ],
+          "bbox": [
+            108.00001525878906,
+            722.3063354492188,
+            139.27261352539062,
+            732.2689208984375
+          ],
+          "text_anchor": "bounds.",
+          "selected_bottom": 732.3,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "efficiently-computing-similarities:p5:y186.7",
+          "page": 5,
+          "paragraph_pages": [
+            5
+          ],
+          "bbox": [
+            108.00009155273438,
+            175.05674743652344,
+            484.85784912109375,
+            185.24990844726562
+          ],
+          "text_anchor": "obliviousmap,meaningthatanyalgorithmicresultforℓimpliessimilarresultsforℓaswell.",
+          "selected_bottom": 186.7,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "efficiently-computing-similarities:p5:y264.7",
+          "page": 5,
+          "paragraph_pages": [
+            5
+          ],
+          "bbox": [
+            108.00009155273438,
+            254.5367431640625,
+            482.46368408203125,
+            264.6758117675781
+          ],
+          "text_anchor": "alsohaveimplicationsfornon-privateKDEqueriesandgivenewstate-of-the-artquerytimes.",
+          "selected_bottom": 264.7,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "efficiently-computing-similarities:p5:y370.7",
+          "page": 5,
+          "paragraph_pages": [
+            5
+          ],
+          "bbox": [
+            108.0001220703125,
+            360.3344421386719,
+            479.5139465332031,
+            370.6567077636719
+          ],
+          "text_anchor": "andthuse=e·edoesnotapproximateeuptorelativeerror.",
+          "selected_bottom": 370.7,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "efficiently-computing-similarities:p5:y453.3",
+          "page": 5,
+          "paragraph_pages": [
+            5
+          ],
+          "bbox": [
+            108.00013732910156,
+            443.15350341796875,
+            397.5378112792969,
+            453.3466491699219
+          ],
+          "text_anchor": "isindependentoftheoriginaldatasetsizenororiginaldimensionalityd.",
+          "selected_bottom": 453.3,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "efficiently-computing-similarities:p5:y502.7",
+          "page": 5,
+          "paragraph_pages": [
+            5
+          ],
+          "bbox": [
+            108.00010681152344,
+            492.6715087890625,
+            426.9505310058594,
+            502.68817138671875
+          ],
+          "text_anchor": "O(1/α)dimensionspreservestheKDEvalueuptomultiplicative1+αfactor.",
+          "selected_bottom": 502.7,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "efficiently-computing-similarities:p5:y600.9",
+          "page": 5,
+          "paragraph_pages": [
+            5
+          ],
+          "bbox": [
+            108.00009155273438,
+            590.968017578125,
+            497.8465576171875,
+            600.9306030273438
+          ],
+          "text_anchor": "Makarychevetal.,2019;Narayananetal.,2021;Izzoetal.,2021;Charikar&Waingarten,2022).",
+          "selected_bottom": 600.9,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "efficiently-computing-similarities:p6:y105.2",
+          "page": 6,
+          "paragraph_pages": [
+            5,
+            6
+          ],
+          "bbox": [
+            107.99998474121094,
+            95.22743225097656,
+            382.54925537109375,
+            105.19003295898438
+          ],
+          "text_anchor": "constructionandquerytimes.ThisreductionisdetailedinSection3.",
+          "selected_bottom": 105.2,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "efficiently-computing-similarities:p6:y219.5",
+          "page": 6,
+          "paragraph_pages": [
+            6
+          ],
+          "bbox": [
+            107.9999771118164,
+            209.5363311767578,
+            470.1802062988281,
+            219.49893188476562
+          ],
+          "text_anchor": "kernels).AppendixGcontainsourimprovedKDEqueryboundsinthenon-privatesetting.",
+          "selected_bottom": 219.5,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "efficiently-computing-similarities:p6:y311.9",
+          "page": 6,
+          "paragraph_pages": [
+            6
+          ],
+          "bbox": [
+            107.99996185302734,
+            301.69671630859375,
+            357.5558166503906,
+            311.8898620605469
+          ],
+          "text_anchor": "thebox[0,1],buteasilyextendtoalargerdomainbyscaling.",
+          "selected_bottom": 311.9,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "efficiently-computing-similarities:p6:y373.7",
+          "page": 6,
+          "paragraph_pages": [
+            6
+          ],
+          "bbox": [
+            108.0,
+            362.7958984375,
+            456.4976806640625,
+            372.8125915527344
+          ],
+          "text_anchor": "Onεd,(3)thespaceusageisO,(4)andthequerytimeisO(d).",
+          "selected_bottom": 373.7,
+          "eligible": true,
+          "uncertain": true,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "efficiently-computing-similarities:p6:y434.6",
+          "page": 6,
+          "paragraph_pages": [
+            6
+          ],
+          "bbox": [
+            108.00006103515625,
+            424.4148864746094,
+            288.26226806640625,
+            434.6080322265625
+          ],
+          "text_anchor": "(e),andLaplace(e)kernels.",
+          "selected_bottom": 434.6,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "efficiently-computing-similarities:p6:y495.0",
+          "page": 6,
+          "paragraph_pages": [
+            6
+          ],
+          "bbox": [
+            108.0,
+            478.8559265136719,
+            481.2636413574219,
+            488.87261962890625
+          ],
+          "text_anchor": "(2)thequerytimeisO,theconstructiontimeisO,andthespaceusageisO.",
+          "selected_bottom": 495.0,
+          "eligible": true,
+          "uncertain": true,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "efficiently-computing-similarities:p6:y522.3",
+          "page": 6,
+          "paragraph_pages": [
+            6
+          ],
+          "bbox": [
+            107.99996948242188,
+            512.2894287109375,
+            446.70843505859375,
+            522.2520141601562
+          ],
+          "text_anchor": "superior,thusweonlyexplicitlycomparetoWagneretal.(2023);seeAppendixA.2.",
+          "selected_bottom": 522.3,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "efficiently-computing-similarities:p6:y601.5",
+          "page": 6,
+          "paragraph_pages": [
+            6
+          ],
+          "bbox": [
+            107.99996948242188,
+            591.5224609375,
+            502.6385192871094,
+            601.4850463867188
+          ],
+          "text_anchor": "kernels,enablingustoreducethiscasetopriorkernelsinSectionE.Firstwerecallaclassicresult.",
+          "selected_bottom": 601.5,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "efficiently-computing-similarities:p6:y651.0",
+          "page": 6,
+          "paragraph_pages": [
+            6
+          ],
+          "bbox": [
+            124.37397003173828,
+            637.9557495117188,
+            384.8926086425781,
+            648.1015625
+          ],
+          "text_anchor": "we≤(1+δ)x.Furthermore,|we|≤O(1)forallj.",
+          "selected_bottom": 651.0,
+          "eligible": true,
+          "uncertain": true,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "efficiently-computing-similarities:p6:y671.7",
+          "page": 6,
+          "paragraph_pages": [
+            6
+          ],
+          "bbox": [
+            107.99993896484375,
+            661.7364501953125,
+            412.3273620605469,
+            671.6990356445312
+          ],
+          "text_anchor": "Thetheoremimpliesthefollowingusefulcorollary,provedinAppendixF.2.",
+          "selected_bottom": 671.7,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "efficiently-computing-similarities:p6:y705.0",
+          "page": 6,
+          "paragraph_pages": [
+            6
+          ],
+          "bbox": [
+            107.99984741210938,
+            692.94677734375,
+            419.7486877441406,
+            703.0925903320312
+          ],
+          "text_anchor": "byO,suchthatforallx≥1wehavewe−x≤α.",
+          "selected_bottom": 705.0,
+          "eligible": true,
+          "uncertain": true,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "efficiently-computing-similarities:p7:y121.9",
+          "page": 7,
+          "paragraph_pages": [
+            7
+          ],
+          "bbox": [
+            108.00003051757812,
+            111.70793151855469,
+            353.5657043457031,
+            121.90109252929688
+          ],
+          "text_anchor": "structuresforthekernelse,e,ande.",
+          "selected_bottom": 121.9,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "efficiently-computing-similarities:p7:y170.9",
+          "page": 7,
+          "paragraph_pages": [
+            7
+          ],
+          "bbox": [
+            108.0,
+            160.7877960205078,
+            360.78265380859375,
+            170.93360900878906
+          ],
+          "text_anchor": "Q(n,α)querytime,andS(n,α)space,assumingn≥L(ε,α).",
+          "selected_bottom": 170.9,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "efficiently-computing-similarities:p7:y222.8",
+          "page": 7,
+          "paragraph_pages": [
+            7
+          ],
+          "bbox": [
+            108.00006103515625,
+            212.7659149169922,
+            209.40469360351562,
+            222.78260803222656
+          ],
+          "text_anchor": "functionsC,Q,S,andL.",
+          "selected_bottom": 222.8,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "efficiently-computing-similarities:p7:y441.1",
+          "page": 7,
+          "paragraph_pages": [
+            7
+          ],
+          "bbox": [
+            107.99993896484375,
+            429.2528076171875,
+            199.57464599609375,
+            439.5751037597656
+          ],
+          "text_anchor": "yisthequeryt·y.",
+          "selected_bottom": 441.1,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "efficiently-computing-similarities:p7:y537.2",
+          "page": 7,
+          "paragraph_pages": [
+            7
+          ],
+          "bbox": [
+            108.00003051757812,
+            527.21142578125,
+            367.4958801269531,
+            537.1740112304688
+          ],
+          "text_anchor": "aswellasanylower-boundassumptiononthesizeofthedataset.",
+          "selected_bottom": 537.2,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "efficiently-computing-similarities:p7:y622.7",
+          "page": 7,
+          "paragraph_pages": [
+            7
+          ],
+          "bbox": [
+            107.99999237060547,
+            612.6944580078125,
+            395.53045654296875,
+            622.6570434570312
+          ],
+          "text_anchor": "implementedinPython3.9onanM1MacbookProwith32GBofRAM.",
+          "selected_bottom": 622.7,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "efficiently-computing-similarities:p8:y160.0",
+          "page": 8,
+          "paragraph_pages": [
+            7,
+            8
+          ],
+          "bbox": [
+            108.0,
+            149.7917938232422,
+            462.95074462890625,
+            159.98495483398438
+          ],
+          "text_anchor": "functionasεincreases.Weobservedqualitativelysimilarresultsforforn=10aswell.",
+          "selected_bottom": 160.0,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "efficiently-computing-similarities:p8:y477.7",
+          "page": 8,
+          "paragraph_pages": [
+            8
+          ],
+          "bbox": [
+            107.99990844726562,
+            467.76336669921875,
+            497.72674560546875,
+            477.7259826660156
+          ],
+          "text_anchor": "iscompatiblewithanyotherchoiceandweexpectqualitativelysimilarresultswithotherchoices.",
+          "selected_bottom": 477.7,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "efficiently-computing-similarities:p8:y560.4",
+          "page": 8,
+          "paragraph_pages": [
+            8
+          ],
+          "bbox": [
+            107.99990844726562,
+            550.453369140625,
+            504.003173828125,
+            560.4159545898438
+          ],
+          "text_anchor": "thetrainingpointsofafixedlabelastheprivatedatasetandthecorrespondingtestsetasthequeries.",
+          "selected_bottom": 560.4,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "efficiently-computing-similarities:p8:y654.1",
+          "page": 8,
+          "paragraph_pages": [
+            8
+          ],
+          "bbox": [
+            107.9998779296875,
+            643.74267578125,
+            434.9618225097656,
+            654.06494140625
+          ],
+          "text_anchor": "constructiontimeby≈2xandreducingtheconstructiontimebyafactorof>4x.",
+          "selected_bottom": 654.1,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "efficiently-computing-similarities:p9:y345.7",
+          "page": 9,
+          "paragraph_pages": [
+            8,
+            9
+          ],
+          "bbox": [
+            108.00003051757812,
+            335.75537109375,
+            213.6932373046875,
+            345.7179870605469
+          ],
+          "text_anchor": "‘pre-training’information.",
+          "selected_bottom": 345.7,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "efficiently-computing-similarities:p9:y539.4",
+          "page": 9,
+          "paragraph_pages": [
+            9
+          ],
+          "bbox": [
+            107.99992370605469,
+            529.4603271484375,
+            238.8985137939453,
+            539.4229125976562
+          ],
+          "text_anchor": "quiringthelongesttrainingtime.",
+          "selected_bottom": 539.4,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            316.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "efficiently-computing-similarities:p9:y698.8",
+          "page": 9,
+          "paragraph_pages": [
+            9
+          ],
+          "bbox": [
+            107.99992370605469,
+            688.8623046875,
+            143.97486877441406,
+            698.8248901367188
+          ],
+          "text_anchor": "Figure4.",
+          "selected_bottom": 698.8,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        }
+      ],
+      "excluded_regions": [
+        {
+          "pages": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "bbox": [
+            0,
+            0,
+            612,
+            55
+          ],
+          "reason": "running_header"
+        },
+        {
+          "pages": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "bbox": [
+            0,
+            742,
+            612,
+            792
+          ],
+          "reason": "page_footer"
+        }
+      ]
+    },
+    {
+      "path": "test/fixtures/iclr/what-does-automatic-differentiation-compute.pdf",
+      "sha256": "4d0d85306bd629f32339eb35a9cd04f2abe4fa73b21a9af84aad3fd51b29842f",
+      "pages": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "endings": [
+        {
+          "id": "what-does-automatic-differentiation-compute:p1:y351.9",
+          "page": 1,
+          "paragraph_pages": [
+            1
+          ],
+          "bbox": [
+            143.864990234375,
+            341.9642333984375,
+            444.2672119140625,
+            351.9268493652344
+          ],
+          "text_anchor": "almostalwayscomputesaClarkesubderivativeinpracticallearningsetups.",
+          "selected_bottom": 351.9,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            143.9,
+            468.1
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "what-does-automatic-differentiation-compute:p1:y474.3",
+          "page": 1,
+          "paragraph_pages": [
+            1
+          ],
+          "bbox": [
+            107.99998474121094,
+            464.36114501953125,
+            499.7393493652344,
+            474.3237609863281
+          ],
+          "text_anchor": "Thispaperstudiesthesetwomodesofautomaticdifferentiation,andwewritethemsimplyasAD.",
+          "selected_bottom": 474.3,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "what-does-automatic-differentiation-compute:p1:y633.7",
+          "page": 1,
+          "paragraph_pages": [
+            1
+          ],
+          "bbox": [
+            107.99999237060547,
+            623.7631225585938,
+            221.74302673339844,
+            633.7257080078125
+          ],
+          "text_anchor": "non-differentiablefunctions.",
+          "selected_bottom": 633.7,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "what-does-automatic-differentiation-compute:p2:y389.6",
+          "page": 2,
+          "paragraph_pages": [
+            1,
+            2
+          ],
+          "bbox": [
+            108.00000762939453,
+            379.619384765625,
+            369.9366760253906,
+            389.5820007324219
+          ],
+          "text_anchor": "subdifferentialwhenappliedtoacertainclassofneuralnetworks.",
+          "selected_bottom": 389.6,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "what-does-automatic-differentiation-compute:p2:y505.1",
+          "page": 2,
+          "paragraph_pages": [
+            2
+          ],
+          "bbox": [
+            108.00003051757812,
+            495.185302734375,
+            296.3529357910156,
+            505.1479187011719
+          ],
+          "text_anchor": "morepopularnotionofgeneralizedderivatives.",
+          "selected_bottom": 505.1,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "what-does-automatic-differentiation-compute:p3:y136.7",
+          "page": 3,
+          "paragraph_pages": [
+            3
+          ],
+          "bbox": [
+            108.0,
+            126.74940490722656,
+            504.003173828125,
+            136.71200561523438
+          ],
+          "text_anchor": "tionallayers)andmaxpools(i.e.,non-pointwiseactivationfunctions),undergeneralminibatchsizes.",
+          "selected_bottom": 136.7,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "what-does-automatic-differentiation-compute:p3:y313.1",
+          "page": 3,
+          "paragraph_pages": [
+            3
+          ],
+          "bbox": [
+            108.0,
+            303.187255859375,
+            493.7618713378906,
+            313.1498718261719
+          ],
+          "text_anchor": "whetherADiscorrectunderpracticallearningsetups.WelastlyconcludethepaperinSection5.",
+          "selected_bottom": 313.1,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "what-does-automatic-differentiation-compute:p3:y541.9",
+          "page": 3,
+          "paragraph_pages": [
+            3
+          ],
+          "bbox": [
+            108.000244140625,
+            529.4882202148438,
+            474.4908447265625,
+            541.8578491210938
+          ],
+          "text_anchor": "+and−todenote+1and−1,respectively;forexample,fors=−andx∈R,s·xis−x.",
+          "selected_bottom": 541.9,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "what-does-automatic-differentiation-compute:p3:y643.8",
+          "page": 3,
+          "paragraph_pages": [
+            3
+          ],
+          "bbox": [
+            108.00041198730469,
+            633.4625854492188,
+            485.6310729980469,
+            643.7848510742188
+          ],
+          "text_anchor": "hullof∂f(x),whichwedenoteby∂f(x).Bydefinition,wealwayshave∂f(x)⊂∂f(x).",
+          "selected_bottom": 643.8,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "what-does-automatic-differentiation-compute:p3:y733.5",
+          "page": 3,
+          "paragraph_pages": [
+            3
+          ],
+          "bbox": [
+            108.00048828125,
+            719.8992309570312,
+            504.0001525878906,
+            732.2688598632812
+          ],
+          "text_anchor": "ananalyticpre-activationfunctionandσ:R→Rbeacontinuousactivationfunction.",
+          "selected_bottom": 733.5,
+          "eligible": false,
+          "uncertain": false,
+          "reason": "continues_on_page_4_before_display",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "what-does-automatic-differentiation-compute:p4:y182.0",
+          "page": 4,
+          "paragraph_pages": [
+            4
+          ],
+          "bbox": [
+            108.0,
+            171.21983337402344,
+            486.0086975097656,
+            181.41299438476562
+          ],
+          "text_anchor": "weoftenomitXanduseΨ(w),z(w),andy(w)todenoteΨ(w;X),z(w;X),andy(w;X).",
+          "selected_bottom": 182.0,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "what-does-automatic-differentiation-compute:p4:y198.4",
+          "page": 4,
+          "paragraph_pages": [
+            4
+          ],
+          "bbox": [
+            108.00003051757812,
+            188.38636779785156,
+            504.0033874511719,
+            198.34896850585938
+          ],
+          "text_anchor": "Wemainlyfocusontwoclassesofneuralnetworks,wherethefirstclassischaracterizedasfollows.",
+          "selected_bottom": 198.4,
+          "eligible": false,
+          "uncertain": false,
+          "reason": "formula_or_definition_leadin",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "what-does-automatic-differentiation-compute:p4:y234.4",
+          "page": 4,
+          "paragraph_pages": [
+            4
+          ],
+          "bbox": [
+            108.00003051757812,
+            222.1202850341797,
+            375.4537353515625,
+            234.31349182128906
+          ],
+          "text_anchor": "functions{f:R→R}suchthatf=fonAforalli∈[n].",
+          "selected_bottom": 234.4,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "what-does-automatic-differentiation-compute:p4:y301.6",
+          "page": 4,
+          "paragraph_pages": [
+            4
+          ],
+          "bbox": [
+            108.00015258789062,
+            290.69769287109375,
+            387.43780517578125,
+            300.8434753417969
+          ],
+          "text_anchor": "τ(x,w)=f(x,u)+b1foralll∈[L]withnon-differentiableρ.",
+          "selected_bottom": 301.6,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "what-does-automatic-differentiation-compute:p4:y418.8",
+          "page": 4,
+          "paragraph_pages": [
+            4
+          ],
+          "bbox": [
+            108.00021362304688,
+            408.83624267578125,
+            490.2651062011719,
+            418.7988586425781
+          ],
+          "text_anchor": "asfully-connectedonesbutalsocomplexnetworkarchitecturessuchastransformer-basedones.",
+          "selected_bottom": 418.8,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "what-does-automatic-differentiation-compute:p4:y480.8",
+          "page": 4,
+          "paragraph_pages": [
+            4
+          ],
+          "bbox": [
+            108.00021362304688,
+            469.377685546875,
+            490.4474182128906,
+            479.5708312988281
+          ],
+          "text_anchor": "tionfunctionssuchasMaxPool2d.Tocovertheseexceptionalcases,weintroduceCondition2.",
+          "selected_bottom": 480.8,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "what-does-automatic-differentiation-compute:p4:y626.8",
+          "page": 4,
+          "paragraph_pages": [
+            4
+          ],
+          "bbox": [
+            108.00018310546875,
+            615.1265258789062,
+            383.2248229980469,
+            625.2723388671875
+          ],
+          "text_anchor": "Ψ“hasonlytrivialmaxpools”ifϕisanidentitymapforalll∈[L].",
+          "selected_bottom": 626.8,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "what-does-automatic-differentiation-compute:p4:y732.3",
+          "page": 4,
+          "paragraph_pages": [
+            4
+          ],
+          "bbox": [
+            108.00015258789062,
+            719.899169921875,
+            488.0625305175781,
+            732.268798828125
+          ],
+          "text_anchor": "R.Also,havingsharedbiasparametersisageneralizationofhavingdistinctbiasparameters.",
+          "selected_bottom": 732.3,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "what-does-automatic-differentiation-compute:p5:y294.5",
+          "page": 5,
+          "paragraph_pages": [
+            5
+          ],
+          "bbox": [
+            107.99996948242188,
+            284.34979248046875,
+            494.9958190917969,
+            294.5429382324219
+          ],
+          "text_anchor": "thesystems.TheformalexpressionofDΨforneuralnetworksΨcanbefoundinAppendixB.",
+          "selected_bottom": 294.5,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "what-does-automatic-differentiation-compute:p5:y333.4",
+          "page": 5,
+          "paragraph_pages": [
+            5
+          ],
+          "bbox": [
+            107.99990844726562,
+            323.20477294921875,
+            388.5805969238281,
+            333.3979187011719
+          ],
+          "text_anchor": "fixedΨ,wesayADis“alwayscorrect”ifitiscorrectforallXandw.",
+          "selected_bottom": 333.4,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "what-does-automatic-differentiation-compute:p5:y438.9",
+          "page": 5,
+          "paragraph_pages": [
+            5
+          ],
+          "bbox": [
+            107.99994659423828,
+            428.90521240234375,
+            402.544189453125,
+            438.8678283691406
+          ],
+          "text_anchor": "E,anddiscussionsonourtheoreticalresultsareprovidedinSectionsH–J.",
+          "selected_bottom": 438.9,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "what-does-automatic-differentiation-compute:p5:y495.6",
+          "page": 5,
+          "paragraph_pages": [
+            5
+          ],
+          "bbox": [
+            107.99996948242188,
+            485.64019775390625,
+            383.5755310058594,
+            495.6028137207031
+          ],
+          "text_anchor": "whentherearedistinctbiasparametersandtheminibatchsizeisone.",
+          "selected_bottom": 495.6,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "what-does-automatic-differentiation-compute:p5:y532.4",
+          "page": 5,
+          "paragraph_pages": [
+            5
+          ],
+          "bbox": [
+            108.0,
+            520.1741333007812,
+            343.3436584472656,
+            532.3673095703125
+          ],
+          "text_anchor": "∂Ψ(w;X)forallw∈RandX∈RwithB=1.",
+          "selected_bottom": 532.4,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "what-does-automatic-differentiation-compute:p5:y620.8",
+          "page": 5,
+          "paragraph_pages": [
+            5
+          ],
+          "bbox": [
+            107.99990844726562,
+            608.9744873046875,
+            418.25067138671875,
+            619.2967529296875
+          ],
+          "text_anchor": "generalproxygradientsDρ(x)∈∂ρ(x)andallowsresidualconnections.",
+          "selected_bottom": 620.8,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "what-does-automatic-differentiation-compute:p6:y105.2",
+          "page": 6,
+          "paragraph_pages": [
+            5,
+            6
+          ],
+          "bbox": [
+            108.0,
+            95.22743225097656,
+            497.3385009765625,
+            105.19003295898438
+          ],
+          "text_anchor": "with(distinct/shared)biasparameters(Theorems4and6).SeeSectionD.1forthedetailedproof.",
+          "selected_bottom": 105.2,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "what-does-automatic-differentiation-compute:p6:y153.0",
+          "page": 6,
+          "paragraph_pages": [
+            6
+          ],
+          "bbox": [
+            108.0,
+            145.04139709472656,
+            468.357177734375,
+            155.00399780273438
+          ],
+          "text_anchor": "ityoftheClarkesubdifferentialwithaddition(Clarkeetal.,1998;KakadeandLee,2018).",
+          "selected_bottom": 153.0,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "what-does-automatic-differentiation-compute:p6:y190.4",
+          "page": 6,
+          "paragraph_pages": [
+            6
+          ],
+          "bbox": [
+            108.0,
+            178.21031188964844,
+            266.40966796875,
+            190.4035186767578
+          ],
+          "text_anchor": "w∈RandX∈RwithB=1.",
+          "selected_bottom": 190.4,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "what-does-automatic-differentiation-compute:p6:y226.0",
+          "page": 6,
+          "paragraph_pages": [
+            6
+          ],
+          "bbox": [
+            107.99993896484375,
+            213.7872772216797,
+            266.40960693359375,
+            225.98048400878906
+          ],
+          "text_anchor": "w∈RandX∈RwithB≥2.",
+          "selected_bottom": 226.0,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "what-does-automatic-differentiation-compute:p6:y289.6",
+          "page": 6,
+          "paragraph_pages": [
+            6
+          ],
+          "bbox": [
+            107.99996948242188,
+            279.666259765625,
+            247.16758728027344,
+            289.6288757324219
+          ],
+          "text_anchor": "distinctbiasparametersareabsent.",
+          "selected_bottom": 289.6,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "what-does-automatic-differentiation-compute:p6:y326.0",
+          "page": 6,
+          "paragraph_pages": [
+            6
+          ],
+          "bbox": [
+            107.99996948242188,
+            318.520263671875,
+            504.0032958984375,
+            328.4828796386719
+          ],
+          "text_anchor": "choiceofproxygradientsissufficientforADtobealwayscorrect,regardlessoftheminibatchsize.",
+          "selected_bottom": 326.0,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "what-does-automatic-differentiation-compute:p6:y376.2",
+          "page": 6,
+          "paragraph_pages": [
+            6
+          ],
+          "bbox": [
+            108.0,
+            364.6955871582031,
+            451.6276550292969,
+            374.84136962890625
+          ],
+          "text_anchor": "Further,ifλ,...,λ∈{0,1},thenDΨ(w;X)∈∂Ψ(w;X)forallw,B,andX.",
+          "selected_bottom": 376.2,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "what-does-automatic-differentiation-compute:p6:y493.3",
+          "page": 6,
+          "paragraph_pages": [
+            6
+          ],
+          "bbox": [
+            108.00006103515625,
+            483.3221435546875,
+            464.1130676269531,
+            493.2847595214844
+          ],
+          "text_anchor": "conditioninTheorem4canbeeasilyfulfilledbychoosingproperproxygradientsofAD.",
+          "selected_bottom": 493.3,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "what-does-automatic-differentiation-compute:p6:y533.0",
+          "page": 6,
+          "paragraph_pages": [
+            6
+          ],
+          "bbox": [
+            108.00006103515625,
+            522.1761474609375,
+            392.0537109375,
+            532.1387329101562
+          ],
+          "text_anchor": "aresultforgeneralnetworkscanbefoundinTheorem8inSection3.2.",
+          "selected_bottom": 533.0,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "what-does-automatic-differentiation-compute:p6:y590.2",
+          "page": 6,
+          "paragraph_pages": [
+            6
+          ],
+          "bbox": [
+            108.00003051757812,
+            579.3114624023438,
+            482.3327331542969,
+            589.457275390625
+          ],
+          "text_anchor": "linearlyindependentwhenevery(w;X)∈ndf(ρ)forsomel∈[L],i∈[N],andb∈[B].",
+          "selected_bottom": 590.2,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "what-does-automatic-differentiation-compute:p6:y653.1",
+          "page": 6,
+          "paragraph_pages": [
+            6
+          ],
+          "bbox": [
+            108.00006103515625,
+            643.1431274414062,
+            380.0090026855469,
+            653.105712890625
+          ],
+          "text_anchor": "canbeeasilysatisfied;weempiricallydemonstratethisinSection4.",
+          "selected_bottom": 653.1,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "what-does-automatic-differentiation-compute:p6:y714.5",
+          "page": 6,
+          "paragraph_pages": [
+            6
+          ],
+          "bbox": [
+            107.99996948242188,
+            703.6846313476562,
+            468.69195556640625,
+            713.8777465820312
+          ],
+          "text_anchor": "z(w;X)guaranteestheexistenceofsuchasequence.SeeSectionD.5formoredetails.",
+          "selected_bottom": 714.5,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "what-does-automatic-differentiation-compute:p7:y420.4",
+          "page": 7,
+          "paragraph_pages": [
+            7
+          ],
+          "bbox": [
+            108.00003051757812,
+            410.47039794921875,
+            489.5177307128906,
+            420.4330139160156
+          ],
+          "text_anchor": "introducethefollowingtheoremfornetworkswithsharedbiasparametersandtrivialmaxpools.",
+          "selected_bottom": 420.4,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "what-does-automatic-differentiation-compute:p7:y477.6",
+          "page": 7,
+          "paragraph_pages": [
+            7
+          ],
+          "bbox": [
+            108.00006103515625,
+            465.44635009765625,
+            252.8417205810547,
+            477.6395263671875
+          ],
+          "text_anchor": "w∈R,B∈N,andX∈R.",
+          "selected_bottom": 477.6,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "what-does-automatic-differentiation-compute:p7:y552.1",
+          "page": 7,
+          "paragraph_pages": [
+            7
+          ],
+          "bbox": [
+            108.00007629394531,
+            542.17333984375,
+            390.61895751953125,
+            552.1359252929688
+          ],
+          "text_anchor": "networksalthoughtheycontainnon-differentiableactivationfunctions.",
+          "selected_bottom": 552.1,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "what-does-automatic-differentiation-compute:p7:y602.0",
+          "page": 7,
+          "paragraph_pages": [
+            7
+          ],
+          "bbox": [
+            108.00009155273438,
+            591.9863891601562,
+            333.91192626953125,
+            601.948974609375
+          ],
+          "text_anchor": "Theorem6,whichisabouthavingonlytrivialmaxpools.",
+          "selected_bottom": 602.0,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "what-does-automatic-differentiation-compute:p7:y637.2",
+          "page": 7,
+          "paragraph_pages": [
+            7
+          ],
+          "bbox": [
+            108.0001220703125,
+            625.0443115234375,
+            338.81976318359375,
+            637.2374877929688
+          ],
+          "text_anchor": "∂Ψ(w;X)forsomew∈R,B∈N,andX∈R.",
+          "selected_bottom": 637.2,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "what-does-automatic-differentiation-compute:p7:y678.9",
+          "page": 7,
+          "paragraph_pages": [
+            7
+          ],
+          "bbox": [
+            108.00010681152344,
+            668.8943481445312,
+            468.27752685546875,
+            678.85693359375
+          ],
+          "text_anchor": "networksinpractice,weprovideagenericsufficientconditionthatguaranteescorrectAD.",
+          "selected_bottom": 678.9,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "what-does-automatic-differentiation-compute:p7:y715.6",
+          "page": 7,
+          "paragraph_pages": [
+            7
+          ],
+          "bbox": [
+            108.00018310546875,
+            703.9996948242188,
+            493.0269470214844,
+            714.1455078125
+          ],
+          "text_anchor": "DΨ(w;X)∈∂Ψ(w;X)ifP=∅foralll∈[L]wherePdenotestheoutputofAlgorithm1.",
+          "selected_bottom": 715.6,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "what-does-automatic-differentiation-compute:p8:y313.9",
+          "page": 8,
+          "paragraph_pages": [
+            8
+          ],
+          "bbox": [
+            107.99990844726562,
+            302.1280517578125,
+            443.93365478515625,
+            312.4503173828125
+          ],
+          "text_anchor": "∂α/∂w=∂α/∂wforalli∈T.SeeSectionE.3fordetailedarguments.",
+          "selected_bottom": 313.9,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "what-does-automatic-differentiation-compute:p8:y374.7",
+          "page": 8,
+          "paragraph_pages": [
+            8
+          ],
+          "bbox": [
+            107.9998779296875,
+            362.9001159667969,
+            368.94097900390625,
+            373.2223815917969
+          ],
+          "text_anchor": "cofthisproblemisstrictlypositiveifandonlyifPisnotempty.",
+          "selected_bottom": 374.7,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "what-does-automatic-differentiation-compute:p8:y451.3",
+          "page": 8,
+          "paragraph_pages": [
+            8
+          ],
+          "bbox": [
+            107.9998550415039,
+            441.3597412109375,
+            504.0031433105469,
+            451.3223571777344
+          ],
+          "text_anchor": "convolutionalnetworkswithsharedbiasparametersthatdonotsatisfytheconditionsinTheorem6.",
+          "selected_bottom": 451.3,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "what-does-automatic-differentiation-compute:p8:y588.8",
+          "page": 8,
+          "paragraph_pages": [
+            8
+          ],
+          "bbox": [
+            107.99984741210938,
+            578.8446655273438,
+            386.2751770019531,
+            588.8072509765625
+          ],
+          "text_anchor": "i.e.,thesenetworksdonotsatisfytheconditionsinTheorems1and4.",
+          "selected_bottom": 588.8,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "what-does-automatic-differentiation-compute:p8:y693.4",
+          "page": 8,
+          "paragraph_pages": [
+            8
+          ],
+          "bbox": [
+            107.99984741210938,
+            683.2211303710938,
+            236.20101928710938,
+            693.4142456054688
+          ],
+          "text_anchor": "andHardSigmoid,respectively.",
+          "selected_bottom": 693.4,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "what-does-automatic-differentiation-compute:p9:y310.4",
+          "page": 9,
+          "paragraph_pages": [
+            8,
+            9
+          ],
+          "bbox": [
+            108.00001525878906,
+            300.4564208984375,
+            486.3695983886719,
+            310.4190368652344
+          ],
+          "text_anchor": "dataset(Krizhevskyetal.,2009)usingAD-basedSGDwiththesamesettingsdescribedabove.",
+          "selected_bottom": 310.4,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "what-does-automatic-differentiation-compute:p9:y404.1",
+          "page": 9,
+          "paragraph_pages": [
+            9
+          ],
+          "bbox": [
+            107.99993896484375,
+            394.1053466796875,
+            334.32025146484375,
+            404.0679626464844
+          ],
+          "text_anchor": "alwaysreturnedanelementoftheClarkesubdifferential.",
+          "selected_bottom": 404.1,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "what-does-automatic-differentiation-compute:p9:y499.2",
+          "page": 9,
+          "paragraph_pages": [
+            9
+          ],
+          "bbox": [
+            107.99995422363281,
+            487.52374267578125,
+            402.9236145019531,
+            497.7168884277344
+          ],
+          "text_anchor": "maxoperation,atiealwaysoccursregardlessoftheparametervaluesw.",
+          "selected_bottom": 499.2,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "what-does-automatic-differentiation-compute:p9:y570.9",
+          "page": 9,
+          "paragraph_pages": [
+            9
+          ],
+          "bbox": [
+            107.9998779296875,
+            559.1256103515625,
+            481.06646728515625,
+            569.4478759765625
+          ],
+          "text_anchor": "thatthesizeofS\\Twastypicallyoneortwo,implyingthatPwasnon-emptyveryeasily.",
+          "selected_bottom": 570.9,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "what-does-automatic-differentiation-compute:p9:y732.3",
+          "page": 9,
+          "paragraph_pages": [
+            9
+          ],
+          "bbox": [
+            107.99989318847656,
+            722.3062744140625,
+            450.7032470703125,
+            732.2688598632812
+          ],
+          "text_anchor": "WebelieveourresultsandanalyseswouldcontributetoabetterunderstandingofAD.",
+          "selected_bottom": 732.3,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "what-does-automatic-differentiation-compute:p10:y157.4",
+          "page": 10,
+          "paragraph_pages": [
+            10
+          ],
+          "bbox": [
+            108.0,
+            147.41639709472656,
+            201.2598114013672,
+            157.37899780273438
+          ],
+          "text_anchor": "(2022R1F1A1076180).",
+          "selected_bottom": 157.4,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        }
+      ],
+      "excluded_regions": [
+        {
+          "pages": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "bbox": [
+            0,
+            0,
+            612,
+            55
+          ],
+          "reason": "running_header"
+        },
+        {
+          "pages": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "bbox": [
+            0,
+            742,
+            612,
+            792
+          ],
+          "reason": "page_footer"
+        }
+      ]
+    }
+  ]
+}

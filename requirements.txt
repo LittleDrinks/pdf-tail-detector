@@ -1,0 +1,4 @@
+PyMuPDF>=1.28.2,<2
+numpy>=1.26,<3
+onnxruntime>=1.20,<2
+opencv-python-headless>=4.10,<6

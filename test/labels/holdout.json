@@ -1,0 +1,1229 @@
+{
+  "schema_version": 1,
+  "policy": "test/labels/LABELING.md",
+  "split": "holdout",
+  "annotation_method": "single Codex visual annotator; preliminary, not independently human-adjudicated",
+  "detector_used_for_labels": false,
+  "source": "https://arxiv.org/pdf/2106.09685, retrieved 2026-10-01, version 2",
+  "documents": [
+    {
+      "path": "test/fixtures/holdout/lora.pdf",
+      "sha256": "e9a0d3128767db616085dc0f4e6e455e672e89af823e8ed1282793682787395a",
+      "pages": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "endings": [
+        {
+          "id": "lora:p1:y463.6",
+          "page": 1,
+          "paragraph_pages": [
+            1
+          ],
+          "bbox": [
+            143.86593627929688,
+            453.1031188964844,
+            443.9595947265625,
+            463.5757751464844
+          ],
+          "text_anchor": "DeBERTa,andGPT-2athttps://github.com/microsoft/LoRA.",
+          "selected_bottom": 463.6,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            143.9,
+            468.1
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "lora:p1:y622.7",
+          "page": 1,
+          "paragraph_pages": [
+            1
+          ],
+          "bbox": [
+            107.99996948242188,
+            612.7684326171875,
+            237.493896484375,
+            622.7310180664062
+          ],
+          "text_anchor": "175billiontrainableparameters.",
+          "selected_bottom": 622.7,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            379.2
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "lora:p2:y127.1",
+          "page": 2,
+          "paragraph_pages": [
+            1,
+            2
+          ],
+          "bbox": [
+            108.0,
+            117.14540100097656,
+            461.14422607421875,
+            127.10800170898438
+          ],
+          "text_anchor": "matchtheﬁne-tuningbaselines,posingatrade-offbetweenefﬁciencyandmodelquality.",
+          "selected_bottom": 127.1,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "lora:p2:y220.8",
+          "page": 2,
+          "paragraph_pages": [
+            2
+          ],
+          "bbox": [
+            107.99996948242188,
+            210.61785888671875,
+            502.039794921875,
+            220.75692749023438
+          ],
+          "text_anchor": "whenthefullrank(i.e.,d)isashighas12,288,makingLoRAbothstorage-andcompute-efﬁcient.",
+          "selected_bottom": 220.8,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "lora:p2:y237.7",
+          "page": 2,
+          "paragraph_pages": [
+            2
+          ],
+          "bbox": [
+            107.9999771118164,
+            227.7303009033203,
+            269.5137023925781,
+            237.69290161132812
+          ],
+          "text_anchor": "LoRApossessesseveralkeyadvantages.",
+          "selected_bottom": 237.7,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "lora:p2:y534.2",
+          "page": 2,
+          "paragraph_pages": [
+            2
+          ],
+          "bbox": [
+            108.0,
+            522.6024780273438,
+            450.44970703125,
+            532.9247436523438
+          ],
+          "text_anchor": "optimizationanduseaTransformerMLPfeedforwarddimensiond=4×d.",
+          "selected_bottom": 534.2,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "lora:p2:y638.6",
+          "page": 2,
+          "paragraph_pages": [
+            2
+          ],
+          "bbox": [
+            108.0000228881836,
+            628.6571655273438,
+            390.4098205566406,
+            638.6197509765625
+          ],
+          "text_anchor": "maximizationofconditionalprobabilitiesgivenatask-speciﬁcprompt.",
+          "selected_bottom": 638.6,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "lora:p2:y733.8",
+          "page": 2,
+          "paragraph_pages": [
+            2
+          ],
+          "bbox": [
+            107.99996948242188,
+            722.0756225585938,
+            503.9950256347656,
+            732.2687377929688
+          ],
+          "text_anchor": "correspondingSQLcommand;forsummarization,xisthecontentofanarticleandyitssummary.",
+          "selected_bottom": 733.8,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "lora:p3:y105.2",
+          "page": 3,
+          "paragraph_pages": [
+            3
+          ],
+          "bbox": [
+            108.00003051757812,
+            95.22743225097656,
+            486.71820068359375,
+            105.19003295898438
+          ],
+          "text_anchor": "byrepeatedlyfollowingthegradienttomaximizetheconditionallanguagemodelingobjective:",
+          "selected_bottom": 105.2,
+          "eligible": false,
+          "uncertain": false,
+          "reason": "display_formula_leadin",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "lora:p3:y197.9",
+          "page": 3,
+          "paragraph_pages": [
+            3
+          ],
+          "bbox": [
+            108.00004577636719,
+            187.9854278564453,
+            326.03155517578125,
+            197.94802856445312
+          ],
+          "text_anchor": "ﬁne-tunedmodelscanbechallenging,ifatallfeasible.",
+          "selected_bottom": 197.9,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "lora:p3:y237.4",
+          "page": 3,
+          "paragraph_pages": [
+            3
+          ],
+          "bbox": [
+            108.00006103515625,
+            226.48072814941406,
+            388.1136474609375,
+            236.80300903320312
+          ],
+          "text_anchor": "|Θ|≪|Φ|.Thetaskofﬁnding∆ΦthusbecomesoptimizingoverΘ:",
+          "selected_bottom": 237.4,
+          "eligible": false,
+          "uncertain": false,
+          "reason": "display_formula_leadin",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "lora:p3:y319.5",
+          "page": 3,
+          "paragraph_pages": [
+            3
+          ],
+          "bbox": [
+            108.0,
+            308.6017761230469,
+            321.9146728515625,
+            318.9240417480469
+          ],
+          "text_anchor": "ableparameters|Θ|canbeassmallas0.01%of|Φ|.",
+          "selected_bottom": 319.5,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "lora:p3:y448.5",
+          "page": 3,
+          "paragraph_pages": [
+            3
+          ],
+          "bbox": [
+            108.00001525878906,
+            438.51239013671875,
+            258.2459716796875,
+            448.4750061035156
+          ],
+          "text_anchor": "latency-sensitiveproductionscenario.",
+          "selected_bottom": 448.5,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "lora:p3:y603.8",
+          "page": 3,
+          "paragraph_pages": [
+            3
+          ],
+          "bbox": [
+            108.00001525878906,
+            593.8582763671875,
+            278.60955810546875,
+            603.8208618164062
+          ],
+          "text_anchor": "verysmallbottleneckdimension(Table1).",
+          "selected_bottom": 603.8,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "lora:p3:y642.7",
+          "page": 3,
+          "paragraph_pages": [
+            3
+          ],
+          "bbox": [
+            108.00001525878906,
+            632.2032470703125,
+            494.6192626953125,
+            642.6758422851562
+          ],
+          "text_anchor": "AllReduceandBroadcast,unlesswestoretheadapterparametersredundantlymanytimes.",
+          "selected_bottom": 642.7,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "lora:p3:y732.3",
+          "page": 3,
+          "paragraph_pages": [
+            3
+          ],
+          "bbox": [
+            108.00001525878906,
+            722.3062744140625,
+            241.91726684570312,
+            732.2688598632812
+          ],
+          "text_anchor": "ontaskperformancetoSection5.",
+          "selected_bottom": 732.3,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "lora:p4:y309.8",
+          "page": 4,
+          "paragraph_pages": [
+            4
+          ],
+          "bbox": [
+            108.0,
+            299.87640380859375,
+            360.81097412109375,
+            309.8390197753906
+          ],
+          "text_anchor": "languagemodelsinourexperimentsasthemotivatingusecase.",
+          "selected_bottom": 309.8,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "lora:p4:y454.4",
+          "page": 4,
+          "paragraph_pages": [
+            4
+          ],
+          "bbox": [
+            108.00004577636719,
+            443.60980224609375,
+            480.7708740234375,
+            453.8029479980469
+          ],
+          "text_anchor": "outputvectorsaresummedcoordinate-wise.Forh=Wx,ourmodiﬁedforwardpassyields:",
+          "selected_bottom": 454.4,
+          "eligible": false,
+          "uncertain": false,
+          "reason": "display_formula_leadin",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "lora:p4:y548.3",
+          "page": 4,
+          "paragraph_pages": [
+            4
+          ],
+          "bbox": [
+            108.0,
+            538.076904296875,
+            194.7834014892578,
+            548.27001953125
+          ],
+          "text_anchor": "r(Yang&Hu,2021).",
+          "selected_bottom": 548.3,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "lora:p4:y647.5",
+          "page": 4,
+          "paragraph_pages": [
+            4
+          ],
+          "bbox": [
+            108.0,
+            637.5004272460938,
+            340.3377685546875,
+            647.4630126953125
+          ],
+          "text_anchor": "methodstoamodelthatcannottakelonginputsequences.",
+          "selected_bottom": 647.5,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "lora:p5:y105.2",
+          "page": 5,
+          "paragraph_pages": [
+            4,
+            5
+          ],
+          "bbox": [
+            108.0,
+            95.22743225097656,
+            199.59613037109375,
+            105.19003295898438
+          ],
+          "text_anchor": "modelbyconstruction.",
+          "selected_bottom": 105.2,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "lora:p5:y239.0",
+          "page": 5,
+          "paragraph_pages": [
+            5
+          ],
+          "bbox": [
+            108.00003051757812,
+            229.02931213378906,
+            324.5271301269531,
+            238.99191284179688
+          ],
+          "text_anchor": "layers,LayerNormlayers,andbiasestoafuturework.",
+          "selected_bottom": 239.0,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "lora:p5:y382.8",
+          "page": 5,
+          "paragraph_pages": [
+            5
+          ],
+          "bbox": [
+            108.00003051757812,
+            372.87213134765625,
+            298.10638427734375,
+            382.8347473144531
+          ],
+          "text_anchor": "gradientforthevastmajorityoftheparameters.",
+          "selected_bottom": 382.8,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "lora:p5:y432.6",
+          "page": 5,
+          "paragraph_pages": [
+            5
+          ],
+          "bbox": [
+            108.00003051757812,
+            422.68511962890625,
+            468.3771057128906,
+            432.6477355957031
+          ],
+          "text_anchor": "theLoRAmodulestouseforsamplesinabatchforscenarioswherelatencyisnotcritical.",
+          "selected_bottom": 432.6,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "lora:p5:y562.6",
+          "page": 5,
+          "paragraph_pages": [
+            5
+          ],
+          "bbox": [
+            108.0000228881836,
+            552.6370849609375,
+            448.3722839355469,
+            562.5996704101562
+          ],
+          "text_anchor": "moredetailsonthedatasetsweuse.WeuseNVIDIATeslaV100forallexperiments.",
+          "selected_bottom": 562.6,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "lora:p5:y630.6",
+          "page": 5,
+          "paragraph_pages": [
+            5
+          ],
+          "bbox": [
+            108.00001525878906,
+            620.68505859375,
+            198.8788604736328,
+            630.6476440429688
+          ],
+          "text_anchor": "incertainexperiments.",
+          "selected_bottom": 630.6,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "lora:p5:y681.7",
+          "page": 5,
+          "paragraph_pages": [
+            5
+          ],
+          "bbox": [
+            108.00001525878906,
+            671.6431274414062,
+            468.9602355957031,
+            681.6966552734375
+          ],
+          "text_anchor": "inpriorwork(Li&Liang,2021)onGPT-2,whichadaptsjustthelasttwolayers(FT).",
+          "selected_bottom": 681.7,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "lora:p6:y412.7",
+          "page": 6,
+          "paragraph_pages": [
+            6
+          ],
+          "bbox": [
+            107.99999237060547,
+            402.7364501953125,
+            433.2290954589844,
+            412.6990661621094
+          ],
+          "text_anchor": "Contemporarily,thisbaselinehasalsobeenstudiedbyBitFit(Zakenetal.,2021).",
+          "selected_bottom": 412.7,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "lora:p6:y485.7",
+          "page": 6,
+          "paragraph_pages": [
+            6
+          ],
+          "bbox": [
+            108.00001525878906,
+            474.1077575683594,
+            302.8806457519531,
+            484.4300231933594
+          ],
+          "text_anchor": "trainableparametersis|Θ|=d×(l+l).",
+          "selected_bottom": 485.7,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "lora:p6:y546.5",
+          "page": 6,
+          "paragraph_pages": [
+            6
+          ],
+          "bbox": [
+            107.99998474121094,
+            534.8796997070312,
+            413.4798889160156,
+            545.2019653320312
+          ],
+          "text_anchor": "|Θ|=L×d×(l+l),whereListhenumberofTransformerlayers.",
+          "selected_bottom": 546.5,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "lora:p6:y682.3",
+          "page": 6,
+          "paragraph_pages": [
+            6
+          ],
+          "bbox": [
+            107.99996948242188,
+            670.630859375,
+            496.9311828613281,
+            680.823974609375
+          ],
+          "text_anchor": "isthenumberofadapterlayersandLthenumberoftrainableLayerNorms(e.g.,inAdapter).",
+          "selected_bottom": 682.3,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "lora:p6:y733.8",
+          "page": 6,
+          "paragraph_pages": [
+            6
+          ],
+          "bbox": [
+            108.0,
+            721.9467163085938,
+            504.0048522949219,
+            732.2689819335938
+          ],
+          "text_anchor": "|Θ|=2×L×d×r,whereListhenumberofweightmatricesweapplyLoRAto.",
+          "selected_bottom": 733.8,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "lora:p7:y519.4",
+          "page": 7,
+          "paragraph_pages": [
+            7
+          ],
+          "bbox": [
+            108.0,
+            509.44427490234375,
+            504.0032958984375,
+            519.4068603515625
+          ],
+          "text_anchor": "presentedinTable2(TopThreeSections).SeeSectionD.1fordetailsonthehyperparametersused.",
+          "selected_bottom": 519.4,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "lora:p7:y620.4",
+          "page": 7,
+          "paragraph_pages": [
+            7
+          ],
+          "bbox": [
+            107.99999237060547,
+            610.395263671875,
+            333.72259521484375,
+            620.3578491210938
+          ],
+          "text_anchor": "SeeSectionD.2fordetailsonthehyperparametersused.",
+          "selected_bottom": 620.4,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "lora:p7:y732.3",
+          "page": 7,
+          "paragraph_pages": [
+            7
+          ],
+          "bbox": [
+            108.0,
+            722.3062744140625,
+            336.2232971191406,
+            732.2688598632812
+          ],
+          "text_anchor": "includealistofthehyperparametersusedinSectionD.3.",
+          "selected_bottom": 732.3,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "lora:p8:y351.1",
+          "page": 8,
+          "paragraph_pages": [
+            8
+          ],
+          "bbox": [
+            107.99994659423828,
+            341.11444091796875,
+            501.35321044921875,
+            351.0770568847656
+          ],
+          "text_anchor": "opposedtoprovidingoneforeveryentry.SeeSectionD.4fordetailsonthehyperparametersused.",
+          "selected_bottom": 351.1,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "lora:p8:y444.7",
+          "page": 8,
+          "paragraph_pages": [
+            8
+          ],
+          "bbox": [
+            107.99994659423828,
+            434.76336669921875,
+            448.80059814453125,
+            444.7259826660156
+          ],
+          "text_anchor": "performanceofdifferentadaptationapproachesinthelow-dataregimeinSectionF.3.",
+          "selected_bottom": 444.7,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "lora:p9:y138.1",
+          "page": 9,
+          "paragraph_pages": [
+            8,
+            9
+          ],
+          "bbox": [
+            108.0,
+            128.10438537597656,
+            324.6466979980469,
+            138.06698608398438
+          ],
+          "text_anchor": "languagemodeltrainedto-datewith175Bparameters.",
+          "selected_bottom": 138.1,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "lora:p9:y258.5",
+          "page": 9,
+          "paragraph_pages": [
+            9
+          ],
+          "bbox": [
+            107.99998474121094,
+            248.5452423095703,
+            294.7687683105469,
+            258.5078430175781
+          ],
+          "text_anchor": "hasthesamememoryfootprintaspre-training.",
+          "selected_bottom": 258.5,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "lora:p9:y422.8",
+          "page": 9,
+          "paragraph_pages": [
+            9
+          ],
+          "bbox": [
+            107.99995422363281,
+            412.821044921875,
+            467.8689270019531,
+            422.7836608886719
+          ],
+          "text_anchor": "takeupavailablesequencelengthfortasktokenswhenpositionalembeddingsarelearned.",
+          "selected_bottom": 422.8,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "lora:p9:y598.0",
+          "page": 9,
+          "paragraph_pages": [
+            9
+          ],
+          "bbox": [
+            107.99996948242188,
+            588.055908203125,
+            356.27789306640625,
+            598.0184936523438
+          ],
+          "text_anchor": "low-rankadaptationupdateiswell-motivatedbytheliterature.",
+          "selected_bottom": 598.0,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "lora:p9:y704.4",
+          "page": 9,
+          "paragraph_pages": [
+            9
+          ],
+          "bbox": [
+            107.99995422363281,
+            694.0502319335938,
+            361.31658935546875,
+            704.3724975585938
+          ],
+          "text_anchor": "(upto10,000×)withoutadverselyaffectingtaskperformances.",
+          "selected_bottom": 704.4,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "lora:p10:y116.1",
+          "page": 10,
+          "paragraph_pages": [
+            9,
+            10
+          ],
+          "bbox": [
+            108.0,
+            105.95585632324219,
+            419.77239990234375,
+            116.14901733398438
+          ],
+          "text_anchor": "W?Does∆WhighlycorrelatewithW?Howlargeis∆WcomparingtoW?",
+          "selected_bottom": 116.1,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "lora:p10:y144.0",
+          "page": 10,
+          "paragraph_pages": [
+            10
+          ],
+          "bbox": [
+            108.0,
+            134.08241271972656,
+            439.78448486328125,
+            144.04501342773438
+          ],
+          "text_anchor": "pre-trainedlanguagemodelsfordownstreamtasks,whichisacriticaltopicinNLP.",
+          "selected_bottom": 144.0,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "lora:p10:y233.0",
+          "page": 10,
+          "paragraph_pages": [
+            10
+          ],
+          "bbox": [
+            108.0,
+            222.80284118652344,
+            426.51715087890625,
+            232.99600219726562
+          ],
+          "text_anchor": "r=4ifweadapttwotypes,forall96layers.TheresultispresentedinTable5.",
+          "selected_bottom": 233.0,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        },
+        {
+          "id": "lora:p10:y424.0",
+          "page": 10,
+          "paragraph_pages": [
+            10
+          ],
+          "bbox": [
+            107.99998474121094,
+            414.03643798828125,
+            314.7837219238281,
+            423.9990539550781
+          ],
+          "text_anchor": "adaptingasingletypeofweightswithalargerrank.",
+          "selected_bottom": 424.0,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "lora:p10:y481.6",
+          "page": 10,
+          "paragraph_pages": [
+            10
+          ],
+          "bbox": [
+            107.99996948242188,
+            469.7518005371094,
+            312.0172424316406,
+            480.0740661621094
+          ],
+          "text_anchor": "{W,W,W,W},andjustWforacomparison.",
+          "selected_bottom": 481.6,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": true,
+          "is_short_body": true
+        },
+        {
+          "id": "lora:p10:y694.3",
+          "page": 10,
+          "paragraph_pages": [
+            10
+          ],
+          "bbox": [
+            107.99990844726562,
+            684.2904663085938,
+            466.38446044921875,
+            694.2530517578125
+          ],
+          "text_anchor": "moremeaningfulsubspace,whichsuggeststhatalow-rankadaptationmatrixissufﬁcient.",
+          "selected_bottom": 694.3,
+          "eligible": true,
+          "uncertain": false,
+          "reason": "visually_selected_prose_end",
+          "body_bounds": [
+            108.0,
+            504.0
+          ],
+          "is_short_page": false,
+          "is_short_body": false
+        }
+      ],
+      "excluded_regions": [
+        {
+          "pages": [
+            1
+          ],
+          "bbox": [
+            0,
+            0,
+            612,
+            255
+          ],
+          "reason": "front_matter"
+        },
+        {
+          "pages": [
+            4,
+            6,
+            7,
+            8,
+            10
+          ],
+          "reason": "tables_and_captions"
+        },
+        {
+          "pages": [
+            1,
+            4,
+            5,
+            10
+          ],
+          "reason": "bottom_footnotes"
+        },
+        {
+          "pages": [
+            2
+          ],
+          "bbox": [
+            130,
+            245,
+            505,
+            416
+          ],
+          "reason": "list_items"
+        }
+      ]
+    }
+  ]
+}

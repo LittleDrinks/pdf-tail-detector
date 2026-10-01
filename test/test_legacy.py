@@ -1,11 +1,11 @@
 import re
 from pathlib import Path
 
-import pdfplumber
+import pymupdf
 import pytest
 from reportlab.pdfgen.canvas import Canvas
 
-from pdf_tail_detector import Line, _is_display_math_line, _looks_structural, _without_algorithm_blocks, scan_pdf
+from src.legacy import Line, _is_display_math_line, _looks_structural, _without_algorithm_blocks, scan_pdf
 
 
 class _Page:
@@ -91,14 +91,15 @@ def test_margin_line_numbers_do_not_split_tail_and_split_references_stop_scan(tm
         (
             "efficiently-computing-similarities.pdf",
             16,
-            ("without privacy loss", "private datasets in the box"),
+            ("without privacy loss", "private datasets in the box",
+             "data structures and are faster in the large d regime."),
         ),
     ],
 )
 def test_iclr_papers_keep_prose_tails_and_drop_algorithm_steps(filename, algorithm_page, tail_anchors):
-    path = Path(__file__).parent / "tests" / "fixtures" / "iclr" / filename
-    with pdfplumber.open(path) as pdf:
-        assert re.search(r"Algorithm\s*1\b", pdf.pages[algorithm_page - 1].extract_text() or "")
+    path = Path(__file__).parent / "fixtures" / "iclr" / filename
+    with pymupdf.open(path) as pdf:
+        assert re.search(r"Algorithm\s*1\b", pdf[algorithm_page - 1].get_text())
 
     findings = scan_pdf(path)
 

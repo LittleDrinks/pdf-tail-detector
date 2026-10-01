@@ -1,4 +1,7 @@
 __pycache__/
 *.pyc
 *.tail-marked.pdf
-work/
+/outputs/
+.venv/
+.pytest_cache/
+*.tail-marked.json
