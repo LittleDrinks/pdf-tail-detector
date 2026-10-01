@@ -183,7 +183,8 @@ def paragraph_bounds(para: Paragraph, page: PageData, global_bounds: tuple[float
             right = max(line.bbox[2] for line in long)
             support, source = len(long), "paragraph_alignment"
     return {"left": left, "right": right, "support": support, "source": source,
-            "reliable": right > left and support >= 2}
+            "reliable": right > left and support >= 2,
+            "eligible": not around_image or abstract}
 
 
 class _ParagraphStream:
@@ -318,7 +319,7 @@ def measure(para: Paragraph, page: PageData, bounds: dict, ratio: float,
             "last_char_x1": effective[2], "threshold_x": threshold,
             "tail_ratio": (effective[2] - left) / (right - left) if right > left else None,
             "is_short": effective[2] < threshold, "status": status,
-            "eligible": not para.math_ending, "end_reason": para.end_reason,
+            "eligible": not para.math_ending and bounds.get("eligible", True), "end_reason": para.end_reason,
             "boundary_evidence": para.evidence, "body_bounds": bounds,
             "region": {"id": line.region_id, "label": line.region_label,
                        "score": line.region_score, "source": line.reason},

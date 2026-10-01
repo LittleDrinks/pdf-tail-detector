@@ -17,7 +17,7 @@ python3.12 -m venv .venv
 .venv/bin/python pdf_tail_detector.py paper.pdf
 ```
 
-结果保存在 `outputs/results/paper.tail-marked.pdf` 和 `outputs/results/paper.tail-marked.json`。参考文献跳过，附录继续检查；JSON 同时记录待复核项和检查范围。
+结果保存在 `outputs/results/paper.tail-marked.pdf` 和 `outputs/results/paper.tail-marked.json`。参考文献和图文绕排段落跳过，附录继续检查；JSON 同时记录待复核项和检查范围。
 
 默认阈值是正文宽度的 75%，可用 `--tail-ratio` 调整；`--ratio` 保留旧版整页比例。其他参数见 `--help`。
 

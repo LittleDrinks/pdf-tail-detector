@@ -14,7 +14,7 @@ from src.layout import (
     map_box,
     render_page,
 )
-from src.paragraphs import Paragraph, measure
+from src.paragraphs import Paragraph, measure, paragraph_bounds
 from src.pipeline import analyze_pdf, write_annotated
 
 
@@ -198,6 +198,32 @@ def test_qed_is_peripheral_only_in_proof_and_rightmost_extent_is_used():
     line.glyphs = [Glyph("wide", (108, 100, 190, 110), (108, 108), 10, "Times"),
                    Glyph("later", (170, 100, 180, 110), (170, 108), 10, "Times")]
     assert measure(Paragraph("p", [line], "document_end"), page, bounds, .75)["last_char_x1"] == 190
+
+
+@pytest.mark.parametrize("text_kind,figure_kind,figure_box,eligible", [
+    ("text", "image", (326, 100, 504, 160), False),
+    ("text", "chart", (326, 100, 504, 160), False),
+    ("text", "table", (326, 100, 504, 160), False),
+    ("text", "image", (326, 200, 504, 260), True),
+    ("text", "figure_title", (326, 100, 504, 160), True),
+    ("abstract", "image", (326, 100, 504, 160), True),
+])
+def test_wrapped_layout_eligibility(tmp_path, text_kind, figure_kind, figure_box, eligible):
+    first = TextLine(1, "0:0", [Glyph("A sufficiently long prose line.", (108, 100, 316, 110),
+                                    (108, 108), 10, "Times")],
+                     "A sufficiently long prose line.", (108, 100, 316, 110), 108, 10, "body",
+                     region_id="text", region_label=text_kind)
+    last = TextLine(1, "0:1", [Glyph("Short ending.", (108, 112, 180, 122), (108, 120), 10, "Times")],
+                    "Short ending.", (108, 112, 180, 122), 120, 10, "body",
+                    region_id="text", region_label=text_kind)
+    page = PageData(1, 612, 792, 0, (0, 0, 612, 792), [first, last],
+                    regions=[Region("text", text_kind, .95, (108, 100, 316, 122)),
+                             Region("figure", figure_kind, .95, figure_box)])
+    paragraph = Paragraph("p", page.lines, "paragraph_spacing")
+    bounds = paragraph_bounds(paragraph, page, (108, 504, 5))
+    result = measure(paragraph, page, bounds, .75)
+    assert result["is_short"]
+    assert result["eligible"] == eligible
 
 
 def test_region_touch_does_not_exclude_prose():

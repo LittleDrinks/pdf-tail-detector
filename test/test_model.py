@@ -42,6 +42,11 @@ def test_first_page_has_only_one_full_guide(tmp_path, filename):
         assert guides[0][0] == pytest.approx((405, 0), abs=.1)
         assert guides[0][1] == pytest.approx((405, page.rect.height), abs=.1)
         assert before[0].get_text() == page.get_text()
+        if filename == "holdout/lora.pdf":
+            wrapped = next(p for p in report["paragraphs"] if p["page"] == 1 and "175 billion" in p["final_line"])
+            assert wrapped["body_bounds"]["source"] == "wrap_alignment"
+            assert wrapped["is_short"] and not wrapped["eligible"]
+            assert all(a.type[1] == "Line" for a in page.annots())
     rerun = tmp_path / "rerun.pdf"
     write_annotated(output, rerun, report)
     with pymupdf.open(rerun) as pdf:
