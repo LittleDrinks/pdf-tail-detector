@@ -147,9 +147,9 @@ def test_page_ratio_guide_is_present_without_candidates(tmp_path):
 
 
 def test_qed_is_peripheral_only_in_proof_and_rightmost_extent_is_used():
-    glyphs = [Glyph("Proof.", (108, 100, 140, 110), (108, 108), 10, "Times", "0:0"),
-              Glyph("ends.", (142, 100, 180, 110), (142, 108), 10, "Times", "0:0"),
-              Glyph("□", (496, 100, 504, 110), (496, 108), 10, "Symbol", "0:0")]
+    glyphs = [Glyph("Proof.", (108, 100, 140, 110), (108, 108), 10, "Times"),
+              Glyph("ends.", (142, 100, 180, 110), (142, 108), 10, "Times"),
+              Glyph("□", (496, 100, 504, 110), (496, 108), 10, "Symbol")]
     line = TextLine(1, "0:0", glyphs, "Proof. ends. □", (108, 100, 504, 110), 108, 10, "body")
     page = PageData(1, 612, 792, 0, (0, 0, 612, 792), [line])
     bounds = {"left": 108, "right": 504, "support": 5, "source": "fixture", "reliable": True}
@@ -159,13 +159,13 @@ def test_qed_is_peripheral_only_in_proof_and_rightmost_extent_is_used():
     assert "removed_isolated_proof_qed" in result["corrections"]
     line.text = "An inline square is a mathematical symbol."
     assert not measure(Paragraph("p", [line], "document_end"), page, bounds, .75)["is_short"]
-    line.glyphs = [Glyph("wide", (108, 100, 190, 110), (108, 108), 10, "Times", "0:0"),
-                   Glyph("later", (170, 100, 180, 110), (170, 108), 10, "Times", "0:0")]
+    line.glyphs = [Glyph("wide", (108, 100, 190, 110), (108, 108), 10, "Times"),
+                   Glyph("later", (170, 100, 180, 110), (170, 108), 10, "Times")]
     assert measure(Paragraph("p", [line], "document_end"), page, bounds, .75)["last_char_x1"] == 190
 
 
 def test_region_touch_does_not_exclude_prose():
-    glyphs = [Glyph(str(i), (108 + i * 5, 100, 113 + i * 5, 110), (108 + i * 5, 108), 10, "Times", "0:0")
+    glyphs = [Glyph(str(i), (108 + i * 5, 100, 113 + i * 5, 110), (108 + i * 5, 108), 10, "Times")
               for i in range(20)]
     line = TextLine(1, "0:0", glyphs, "ordinary prose", (108, 100, 208, 110), 108, 10)
     associate([line], [Region("table", "table", .9, (200, 100, 400, 300)),

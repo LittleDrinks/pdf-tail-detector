@@ -5,14 +5,14 @@ import pymupdf
 import pytest
 from reportlab.pdfgen.canvas import Canvas
 
-from src import scan_pdf
 from src.layout import Glyph, PageData, TextLine
 from src.paragraphs import refine_page
+from src.pipeline import analyze_pdf
 
 
 def _line(text: str, top: float, fontname: str = "NimbusRomNo9L-Regu") -> TextLine:
     glyphs = [Glyph(char, (100 + i * 5, top, 105 + i * 5, top + 10),
-                    (100 + i * 5, top + 8), 10, fontname, text) for i, char in enumerate(text)]
+                    (100 + i * 5, top + 8), 10, fontname) for i, char in enumerate(text)]
     return TextLine(2, text, glyphs, text, (100, top, 100 + len(text) * 5, top + 10), top + 8, 10)
 
 
@@ -72,11 +72,11 @@ def test_margin_line_numbers_do_not_split_tail_and_split_references_stop_scan(tm
     canvas.drawString(108, 648, "but it belongs to the references list.")
     canvas.save()
 
-    findings = scan_pdf(path)
+    findings = analyze_pdf(path, backend="none", page_ratio=2 / 3)["candidates"]
 
-    assert all(finding.page == 1 for finding in findings)
-    tail = next(finding for finding in findings if finding.final_line == "full-model timing controls.")
-    assert tail.paragraph_text.startswith("A measured effect")
+    assert all(finding["page"] == 1 for finding in findings)
+    tail = next(finding for finding in findings if finding["final_line"] == "full-model timing controls.")
+    assert tail["paragraph_text"].startswith("A measured effect")
 
 
 @pytest.mark.parametrize(
@@ -100,27 +100,11 @@ def test_iclr_papers_keep_prose_tails_and_drop_algorithm_steps(filename, algorit
     with pymupdf.open(path) as pdf:
         assert re.search(r"Algorithm\s*1\b", pdf[algorithm_page - 1].get_text())
 
-    findings = scan_pdf(path)
+    findings = analyze_pdf(path, backend="none", page_ratio=2 / 3)["candidates"]
 
     assert findings
-    assert not any(re.match(r"^\s*\d+\s*:", finding.final_line) for finding in findings)
-    assert not any(finding.page == 1 and any(token in finding.final_line for token in ("University", "Research", "@")) for finding in findings)
-    assert not any(re.match(r"^\([a-z]\)\s", finding.final_line) for finding in findings)
+    assert not any(re.match(r"^\s*\d+\s*:", finding["final_line"]) for finding in findings)
+    assert not any(finding["page"] == 1 and any(token in finding["final_line"] for token in ("University", "Research", "@")) for finding in findings)
+    assert not any(re.match(r"^\([a-z]\)\s", finding["final_line"]) for finding in findings)
     for anchor in tail_anchors:
-        assert any(anchor in finding.final_line for finding in findings)
-
-
-def test_scan_pdf_keeps_the_original_bbox_order(tmp_path):
-    from src.pipeline import analyze_pdf
-    path = tmp_path / "compat.pdf"
-    canvas = Canvas(str(path), pagesize=(612, 792))
-    canvas.setFont("Times-Roman", 10)
-    canvas.drawString(108, 692, "This paragraph introduces a complete ordinary explanation with enough words")
-    canvas.drawString(108, 680, "and ends here.")
-    canvas.save()
-    item = analyze_pdf(path, backend="none", page_ratio=2 / 3)["candidates"][0]
-    finding = scan_pdf(path)[0]
-    x0, y0, x1, y1 = item["bbox"]
-    assert finding.bbox == (x0, x1, y0, y1)
-    assert finding.threshold_x == 408
-    assert finding.final_line == item["final_line"]
+        assert any(anchor in finding["final_line"] for finding in findings)

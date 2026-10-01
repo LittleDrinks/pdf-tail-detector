@@ -6,7 +6,7 @@ import statistics
 from collections import Counter
 from dataclasses import dataclass, field
 
-from .layout import PageData, TextLine, enclosing, glyph_text, merge_visual_lines
+from .layout import PageData, TextLine, attach_inline, enclosing, glyph_text, merge_baselines
 
 MATH_FONT = re.compile(r"cmmi|cmsy|cmex|msam|msbm|math|symbol", re.I)
 ENTITY = re.compile(r"^(?:Theorem|Lemma|Corollary|Proposition|Definition|Condition|Proof)\b", re.I)
@@ -40,29 +40,6 @@ def _heading(text: str) -> bool:
     return bool(named or numbered)
 
 
-def _exclusion_reason(line: TextLine, page: PageData, size: float, words: list[str], math_ratio: float) -> str | None:
-    text = line.text.strip()
-    margin_digit = bool(re.fullmatch(r"\d+", text) and
-                        (line.bbox[0] < page.width * .15 or line.bbox[1] > page.height * .92))
-    if margin_digit or line.bbox[1] < page.height * .065 or line.bbox[3] > page.height * .95:
-        return "margin_or_page_number"
-    if text.lower().startswith("tail x="):
-        return "legacy_annotation"
-    if _heading(text):
-        return "section_heading"
-    return _environment_reason(line, size, words, math_ratio)
-
-
-def _environment_reason(line: TextLine, size: float, words: list[str], math_ratio: float) -> str | None:
-    if line.size < size * .92 and math_ratio < .2 and len(words) >= 3:
-        return "small_prose_footnote"
-    if re.match(r"^(?:Algorithm\s+\d|\d+\s*:|Require:|Ensure:|Input:|Output:)", line.text.strip(), re.I):
-        return "algorithm_cue"
-    if re.match(r"^[•●◦]\s*|^\([a-z]\)\s+", line.text.strip()):
-        return "list_item"
-    return None
-
-
 def _resolve_formula_conflict(line: TextLine, words: list[str], math_ratio: float) -> None:
     if line.kind == "body" and math_ratio > .6 and len(words) < 2 and len(line.text.strip()) < 25:
         line.kind, line.reason = "math", "inline_math_fragment"
@@ -71,28 +48,34 @@ def _resolve_formula_conflict(line: TextLine, words: list[str], math_ratio: floa
         line.repairs.append("formula_region_conflict")
 
 
-def _classify_uncovered(line: TextLine, size: float, words: list[str], math_ratio: float, model: bool) -> None:
-    if line.kind != "unknown":
-        return
-    text = line.text.strip()
-    if math_ratio > .6 or (len(words) < 2 and any(c in text for c in "=∑∫≤≥")):
-        line.kind, line.reason = "math", "math_geometry"
-    elif (len(words) >= 3 or (len(words) >= 2 and len(text) >= 12)) and line.size >= size * .9:
-        line.kind = "body"
-        line.reason = "heuristic_uncovered_prose" if model else "geometry_baseline_prose"
-
-
 def _refine_line(line: TextLine, page: PageData, size: float, model: bool) -> None:
-    words = re.findall(r"[A-Za-z]{3,}", line.text.strip())
+    text = line.text.strip()
+    words = re.findall(r"[A-Za-z]{3,}", text)
     math_ratio = sum(bool(MATH_FONT.search(g.font)) for g in line.glyphs) / len(line.glyphs)
     _resolve_formula_conflict(line, words, math_ratio)
     if line.kind == "excluded":
         return
-    reason = _exclusion_reason(line, page, size, words, math_ratio)
-    if reason:
-        line.kind, line.reason = "excluded", reason
-    else:
-        _classify_uncovered(line, size, words, math_ratio, model)
+    margin_digit = bool(re.fullmatch(r"\d+", text) and
+                        (line.bbox[0] < page.width * .15 or line.bbox[1] > page.height * .92))
+    # First matching cue wins; model exclusions were handled above.
+    cues = [
+        (margin_digit or line.bbox[1] < page.height * .065 or line.bbox[3] > page.height * .95,
+         "excluded", "margin_or_page_number"),
+        (text.lower().startswith("tail x="), "excluded", "legacy_annotation"),
+        (_heading(text), "excluded", "section_heading"),
+        (line.size < size * .92 and math_ratio < .2 and len(words) >= 3, "excluded", "small_prose_footnote"),
+        (re.match(r"^(?:Algorithm\s+\d|\d+\s*:|Require:|Ensure:|Input:|Output:)", text, re.I),
+         "excluded", "algorithm_cue"),
+        (re.match(r"^[•●◦]\s*|^\([a-z]\)\s+", text), "excluded", "list_item"),
+        (line.kind == "unknown" and (math_ratio > .6 or (len(words) < 2 and any(c in text for c in "=∑∫≤≥"))),
+         "math", "math_geometry"),
+        (line.kind == "unknown" and (len(words) >= 3 or (len(words) >= 2 and len(text) >= 12)) and line.size >= size * .9,
+         "body", "heuristic_uncovered_prose" if model else "geometry_baseline_prose"),
+    ]
+    for matched, kind, reason in cues:
+        if matched:
+            line.kind, line.reason = kind, reason
+            break
 
 
 def _attach_short_prose(page: PageData, size: float) -> None:
@@ -141,7 +124,9 @@ def refine_page(page: PageData, size: float, model: bool) -> None:
         _refine_line(line, page, size, model)
     _attach_short_prose(page, size)
     _exclude_continuations(page, size)
-    page.lines = merge_visual_lines(page.lines, size)
+    page.lines = merge_baselines(page.lines, size)
+    attach_inline(page.lines, size)
+    page.lines.sort(key=lambda line: (line.baseline, line.bbox[0]))
     _exclude_frontmatter(page)
 
 
@@ -176,15 +161,6 @@ def multi_column(page: PageData) -> bool:
     return pairs >= 3
 
 
-def _local_bounds(page, prose, region, abstract, fallback):
-    local = [line for line in page.lines if line.kind == "body"
-             and (line.region_id == region.id if region else line in prose)]
-    if len(local) < 2:
-        return fallback
-    return (min(line.bbox[0] for line in local), max(line.bbox[2] for line in local),
-            len(local), "abstract_alignment" if abstract else "wrap_alignment")
-
-
 def paragraph_bounds(para: Paragraph, page: PageData, global_bounds: tuple[float, float, int]) -> dict:
     prose = [line for line in para.lines if line.kind == "body" and line.page == page.number]
     left, right, support = global_bounds
@@ -194,8 +170,12 @@ def paragraph_bounds(para: Paragraph, page: PageData, global_bounds: tuple[float
     around_image = bool(region and any(r.label in {"image", "chart", "table"}
                                       and r.bbox[1] < region.bbox[3] and r.bbox[3] > region.bbox[1]
                                       and r.bbox[0] >= region.bbox[2] - 10 for r in page.regions))
-    if abstract or around_image:
-        left, right, support, source = _local_bounds(page, prose, region, abstract, (left, right, support, source))
+    local = [line for line in page.lines if line.kind == "body"
+             and (line.region_id == region.id if region else line in prose)]
+    if (abstract or around_image) and len(local) >= 2:
+        left = min(line.bbox[0] for line in local)
+        right = max(line.bbox[2] for line in local)
+        support, source = len(local), "abstract_alignment" if abstract else "wrap_alignment"
     if right <= left or support < 2:
         long = [line for line in prose if len(line.text) >= 45]
         if len(long) >= 2:
@@ -216,7 +196,7 @@ class _ParagraphStream:
         self.last_event: TextLine | None = None
         self.math_ending = False
         self.evidence: list[str] = []
-        self.previous_page: PageData | None = None
+        self.previous_page: int | None = None
 
     def finish(self, reason: str, status: str = "checked") -> None:
         if self.current:
@@ -233,38 +213,24 @@ class _ParagraphStream:
                           and abs(first.size - last.size) < self.size * .15)
         lower = bool(first and re.match(r"^[a-z(]", first.text))
         unfinished = not re.search(r"[.!?]\s*[)\]”\"']?$", last.text)
-        if page.number == self.previous_page.number + 1 and compatible and not blocking and (unfinished or lower):
-            self.evidence.append(f"cross_page:{self.previous_page.number}->{page.number}")
+        if page.number == self.previous_page + 1 and compatible and not blocking and (unfinished or lower):
+            self.evidence.append(f"cross_page:{self.previous_page}->{page.number}")
         elif blocking or not unfinished:
             self.finish("page_boundary_complete")
         else:
             self.finish("ambiguous_page_continuation", "review")
         self.last_event = None
 
-    def ignored_exclusion(self, line: TextLine) -> bool:
+    def excluded(self, line: TextLine) -> None:
         peripheral = (line.reason in {"margin_or_page_number", "small_prose_footnote"}
                       or line.region_label in {"header", "footer", "footnote", "number"})
         alongside = bool(self.current and line.bbox[0] > max(item.bbox[2] for item in self.current
                                                             if item.page == self.current[-1].page) + 8)
-        return peripheral or alongside
-
-    def excluded(self, line: TextLine) -> None:
-        if self.ignored_exclusion(line):
+        if peripheral or alongside:
             return
         if self.current:
             complete = bool(re.search(r"[.!?]\s*$", self.current[-1].text))
             self.finish("structural_boundary", "checked" if complete or self.math_ending else "review")
-        self.last_event = line
-
-    def unknown(self, line: TextLine) -> None:
-        if self.current:
-            self.evidence.append(f"unknown_fragment:{line.id}")
-        self.last_event = line
-
-    def math(self, line: TextLine) -> None:
-        if self.current:
-            self.math_ending = True
-            self.evidence.append(f"display_math:p{line.page}:{line.id}")
         self.last_event = line
 
     def break_reason(self, line: TextLine, step: float) -> str | None:
@@ -291,28 +257,29 @@ class _ParagraphStream:
         self.math_ending = False
         self.last_event = line
 
-    def consume_event(self, line: TextLine, step: float) -> None:
-        if line.kind == "excluded":
-            self.excluded(line)
-        elif line.kind == "unknown":
-            self.unknown(line)
-        elif line.kind == "math":
-            self.math(line)
-        else:
+    def consume_line(self, line: TextLine, step: float) -> None:
+        if line.kind == "body":
             self.body(line, step)
-
+        elif line.kind == "excluded":
+            self.excluded(line)
+        else:
+            if self.current:
+                self.math_ending = self.math_ending or line.kind == "math"
+                self.evidence.append(f"display_math:p{line.page}:{line.id}" if line.kind == "math"
+                                     else f"unknown_fragment:{line.id}")
+            self.last_event = line
 
     def consume(self, page: PageData) -> None:
         if page.status != "checked":
             self.finish("unsupported_page_boundary", "review")
-            self.previous_page, self.last_event = page, None
+            self.previous_page, self.last_event = page.number, None
             return
         if self.current and self.previous_page:
             self.page_boundary(page)
         step = leading(page.lines, self.size)
         for line in page.lines:
-            self.consume_event(line, step)
-        self.previous_page = page
+            self.consume_line(line, step)
+        self.previous_page = page.number
 
 
 def recover_paragraphs(pages: list[PageData], size: float) -> list[Paragraph]:
@@ -323,23 +290,16 @@ def recover_paragraphs(pages: list[PageData], size: float) -> list[Paragraph]:
     return stream.paragraphs
 
 
-def _effective_glyphs(para: Paragraph) -> tuple[list, list[str]]:
-    line = para.lines[-1]
-    glyphs, corrections = list(line.glyphs), list(line.repairs)
-    ordered = sorted(glyphs, key=lambda g: g.bbox[0])
-    if ordered and ordered[-1].text in QED and re.search(r"\bProof\b", " ".join(item.text for item in para.lines), re.I):
-        marker = ordered[-1]
-        others = [g for g in glyphs if g is not marker]
-        if others and marker.bbox[0] - max(g.bbox[2] for g in others) > line.size * 1.8:
-            glyphs = others
-            corrections.append("removed_isolated_proof_qed")
-    return glyphs, corrections
-
-
 def measure(para: Paragraph, page: PageData, bounds: dict, ratio: float,
             page_ratio: float | None = None) -> dict:
     line = para.lines[-1]
-    glyphs, corrections = _effective_glyphs(para)
+    glyphs, corrections = list(line.glyphs), list(line.repairs)
+    marker = sorted(glyphs, key=lambda glyph: glyph.bbox[0])[-1]
+    others = [glyph for glyph in glyphs if glyph is not marker]
+    proof = re.search(r"\bProof\b", " ".join(item.text for item in para.lines), re.I)
+    if marker.text in QED and proof and others and marker.bbox[0] - max(g.bbox[2] for g in others) > line.size * 1.8:
+        glyphs = others
+        corrections.append("removed_isolated_proof_qed")
     effective = enclosing([g.bbox for g in glyphs])
     rightmost = max(glyphs, key=lambda glyph: glyph.bbox[2])
     left, right = bounds["left"], bounds["right"]

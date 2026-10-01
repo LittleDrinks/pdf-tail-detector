@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 
-from src import analyze_pdf
+from src.pipeline import analyze_pdf
 
 MODEL = Path(__file__).resolve().parents[1] / "outputs/models/PP-DocLayout-M"
 pytestmark = pytest.mark.skipif(not (MODEL / "model.onnx").exists(), reason="PP-DocLayout-M weights not prepared")
