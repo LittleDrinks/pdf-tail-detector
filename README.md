@@ -2,9 +2,9 @@
 
 找出论文正文末行过短的段落，在 PDF 中标记位置。适用于有文字层的英文单栏论文，无需 TeX 源码，使用 CPU 运行。
 
-![正文短尾以红框标出](assets/demo.png)
+![正文短尾高亮示例](assets/tail-highlight.png)
 
-红框是短尾候选，橙色虚线是阈值。示例取自 [What does automatic differentiation compute for neural networks?](test/fixtures/iclr/what-does-automatic-differentiation-compute.pdf) 第 7 页。
+淡红底色标出短尾候选，橙色虚线是阈值。示例取自 [What does automatic differentiation compute for neural networks?](test/fixtures/iclr/what-does-automatic-differentiation-compute.pdf) 第 7 页。
 
 ## 使用
 
